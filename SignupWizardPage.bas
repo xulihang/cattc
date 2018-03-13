@@ -20,7 +20,8 @@ Sub Class_Globals
 	
 	Private ABMPageId As String = ""
 	' your own variables
-	private smtp as SMTP
+	Private smtp As SMTP
+	Private emailSent=False As Boolean
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
@@ -150,7 +151,7 @@ Sub ConnectPage()
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
 		page.ShowToast("loginedToast","","你已经登录了",2000,False)
 		Sleep(2000)
-		ABMShared.NavigateToPage(ws,"HomePage","../HomePage")
+		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 	Else
 		ABMShared.ConnectNavigationBar2(page,  "Signup", "Signup", "Signup",  Not(ws.Session.GetAttribute2("IsAuthorized", "") = ""))
 	End If
@@ -376,9 +377,14 @@ Sub wizB_NavigationFinished(ReturnName As String)
 		Dim passwordinp As ABMInput = cont.Component("StepB3ContPasswordInp")
 		password=passwordinp.Text
 		Log(email&xm&password)
+		If emailSent=True Then
+			page.ShowToast("","","请求发送中，请等待",1000,False)
+			Return
+		End If
 		Try
 			signupDone(email,xm,password)
 			sendEmail(email,"【计算机辅助翻译与技术传播大赛】验证邮件","请访问以下链接激活邮件："&generateLink(email))
+		
 		Catch
 			page.ShowToast("doneToast","","注册失败",2000,False)
 			Log(LastException)
@@ -434,6 +440,7 @@ Sub sendEmail(target As String,subject As String,body As String)
 	smtp.Subject = subject
 	smtp.Body = body
 	smtp.Send
+	emailSent=True
 End Sub
 
 Sub SMTP_MessageSent(Success As Boolean)
@@ -441,12 +448,13 @@ Sub SMTP_MessageSent(Success As Boolean)
 	If Success Then
 		page.ShowToast("doneToast","","注册成功,已发送一封验证邮件到您的邮箱。",2000,False)
 		Sleep(2000)
-		ABMShared.NavigateToPage(ws,"HomePage","../HomePage")
+		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 		Log("Message sent successfully")
 	Else
 		Log("Error sending message")
 		Log(LastException.Message)
 	End If
+	emailSent=False
 End Sub
 
 Sub getBase64(s As String) As String
@@ -469,7 +477,7 @@ Sub generateLink(email As String) As String
 	Dim code As String '随机生成的数字代码
 	code=randomNum
 	Dim link As String
-	link="http://127.0.0.1:51045/verify?type=new&base64="&getBase64(email&"&"&code)
+	link="http://xulihanghai.gicp.net:51045/verify?type=new&base64="&getBase64(email&"&"&code)
 	Dim map1 As Map
 	map1.Initialize
 	If File.Exists(File.DirApp,"verifyCodes.map") Then

@@ -259,7 +259,7 @@ Sub page_MsgBoxResult(returnName As String,result As String)
 		Dim code As String '随机生成的数字代码
 		code=randomNum
 		Dim link As String
-		link="http://127.0.0.1:51045/verify?base64="&getBase64(logininp1.Text&"&"&code)
+		link="http://xulihanghai.gicp.net:51045/verify?base64="&getBase64(logininp1.Text&"&"&code)
 		Dim map1 As Map
 		map1.Initialize
 		If File.Exists(File.DirApp,"verifyCodes.map") Then
