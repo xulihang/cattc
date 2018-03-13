@@ -233,6 +233,10 @@ Sub logincancelbtn_Clicked(Target As String)
 	ABMLoginHandler.CancelLogin(page)
 End Sub
 
+Sub forgetpassbtn_Clicked(Target As String)
+	Log(Target)
+    page.ShowToast("","","不支持在这里操作",1000,False)
+End Sub
 '*************************************************************
 
 
@@ -474,16 +478,17 @@ Sub randomNum As String
 End Sub
 
 Sub generateLink(email As String) As String
-	Dim code As String '随机生成的数字代码
+	Dim code,base64 As String '随机生成的数字代码
 	code=randomNum
 	Dim link As String
-	link="http://xulihanghai.gicp.net:51045/verify?type=new&base64="&getBase64(email&"&"&code)
+	base64=getBase64(email&"&"&code)
+	link="http://xulihanghai.gicp.net:51045/verify?type=new&base64="&base64
 	Dim map1 As Map
 	map1.Initialize
 	If File.Exists(File.DirApp,"verifyCodes.map") Then
-		File.ReadMap(File.DirApp,"verifyCodes.map")
+		map1=File.ReadMap(File.DirApp,"verifyCodes.map")
 	End If
-	map1.Put(email,code)
+	map1.Put(email,base64)
 	File.WriteMap(File.DirApp,"verifyCodes.map",map1)
 	Return link
 End Sub

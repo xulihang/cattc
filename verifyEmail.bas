@@ -39,7 +39,7 @@ Sub Handle(req As ServletRequest, resp As ServletResponse)
 			Dim map1 As Map
 			map1=File.ReadMap(File.DirApp,"verifyCodes.map")
 			Log(map1.Get(email))
-			If map1.Get(email)=code Then
+			If base64=map1.Get(email) Then
 
 				If req.ParameterMap.ContainsKey("type") And req.GetParameter("type")="new" Then
 					changeVerified(email)

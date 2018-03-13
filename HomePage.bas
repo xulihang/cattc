@@ -256,16 +256,17 @@ Sub page_MsgBoxResult(returnName As String,result As String)
 		Dim mymodal As ABMModalSheet = page.ModalSheet("login")
 		Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
 		
-		Dim code As String '随机生成的数字代码
+		Dim code,base64 As String '随机生成的数字代码
 		code=randomNum
 		Dim link As String
-		link="http://xulihanghai.gicp.net:51045/verify?base64="&getBase64(logininp1.Text&"&"&code)
+		base64=getBase64(logininp1.Text&"&"&code)
+		link="http://xulihanghai.gicp.net:51045/verify?base64="&base64
 		Dim map1 As Map
 		map1.Initialize
 		If File.Exists(File.DirApp,"verifyCodes.map") Then
-			File.ReadMap(File.DirApp,"verifyCodes.map")
+			map1=File.ReadMap(File.DirApp,"verifyCodes.map")
 		End If
-		map1.Put(logininp1.Text,code)
+		map1.Put(logininp1.Text,base64)
 		File.WriteMap(File.DirApp,"verifyCodes.map",map1)
 		
 		sendEmail(logininp1.Text,"重制密码","点此链接重制密码。"&link)
