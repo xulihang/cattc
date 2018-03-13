@@ -289,7 +289,8 @@ Sub ConnectNavigationBar(page As ABMPage) 'ignore
 	page.NavigationBar.AddSideBarSubItem("Apps",  "DLogs", "My Card Page", "mdi-action-view-list", "")
 	
 	' add the LOGOUT item on the title bar....
-	page.NavigationBar.AddTopItem("LogOff", "Logout", "mdi-action-exit-to-app",   "",False)
+	page.NavigationBar.AddTopItem("Home", "主页", "",  "../HomePage",False)
+	page.NavigationBar.AddTopItem("LogOff", "登出", "mdi-action-exit-to-app",   "",False)
 	
 		
 	page.NavigationBar.Refresh ' IMPORTANT

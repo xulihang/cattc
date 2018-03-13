@@ -2,7 +2,7 @@
 Group=Default Group
 ModulesStructureVersion=1
 Type=Class
-Version=5.9
+Version=6.01
 @EndOfDesignText@
 'Class module
 Sub Class_Globals
@@ -14,13 +14,13 @@ Sub Class_Globals
 	' to access the constants
 	Private ABM As ABMaterial 'ignore
 	' name of the page, must be the same as the class name (case sensitive!)
-	Public Name As String = "HomePage"
+	Public Name As String = "AnswerPage"
 	' name of the app, same as in ABMApplication
 '	Public AppName As String = "template"
 	
 	Private ABMPageId As String = ""
 	' your own variables
-	Private smtp As SMTP
+	
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
@@ -46,7 +46,7 @@ Private Sub WebSocket_Connected (WebSocket1 As WebSocket)
 	
 	
 	' Set needs auth to false.  These are public pages....
-	ABMShared.NeedsAuthorization = False
+	ABMShared.NeedsAuthorization = True
 	
 	
 	' This section is skipped when auth not required...
@@ -139,57 +139,33 @@ public Sub BuildTheme()
 	theme.Initialize("pagetheme")
 
 	theme.AddABMTheme(ABMShared.MyTheme)
-	theme.AddContainerTheme("infoContTheme")
-	theme.Container("infoContTheme").ZDepth=ABM.ZDEPTH_1
-	theme.AddLabelTheme("leftLblTheme")
-	theme.Label("leftLblTheme").Align=ABM.TEXTALIGN_LEFT
-	theme.AddInputTheme("inputTheme")
+
 End Sub
 
 
 Sub ConnectPage()
-	Dim card1 As ABMCard
-	card1.InitializeAsCard(page,"card1","邀请函","第七届全国计算机辅助翻译大赛",ABM.CARD_NOTSPECIFIED,"")
+
+	
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
 		ABMShared.ConnectNavigationBar(page)
-		page.Cell(2,1).AddComponent(BuildInfoContainer)
-		card1.AddAction("查看答题情况")
 	Else
-		ABMShared.ConnectNavigationBar2(page,  "Home", "Home", "Home",  Not(ws.Session.GetAttribute2("IsAuthorized", "") = ""))		
-		card1.AddAction("报名")
+		Return
 	End If
 
+	Dim tabs As ABMTabs
+	tabs.Initialize(page, "tabs", "")
+	tabs.AddTab("tab1","汉译英",BuildTabContainer("tab1","汉译英"),3,3,3,3,3,3,True,True,"","")
+	tabs.AddTab("tab2","英译汉",BuildTabContainer("tab2","英译汉"),3,3,3,3,3,3,True,True,"","")
+	tabs.AddTab("tab3","技术传播",BuildTabContainer("tab3","技术传播"),3,3,3,3,3,3,True,True,"","")
 	
-	
-	page.Cell(1,1).AddComponent(card1)
-
-	
+	page.Cell(1,1).AddComponent(tabs)
 	page.Refresh ' IMPORTANT
  
 	page.RestoreNavigationBarPosition
 
 	' NEW, because we use ShowLoaderType=ABM.LOADER_TYPE_MANUAL
 	page.FinishedLoading 'IMPORTANT
-	
-End Sub
-
-Sub card1_LinkClicked(Card As String, Action As String)
-	Log("Target: "&Card&"  Action: "&Action)
-	If Action="报名" Then
-		ABMShared.NavigateToPage(ws, ABM.GetPageID(page, "SignupWizardPage",ws), "../SignupWizardPage")
-	Else
-		ABMShared.NavigateToPage(ws, ABM.GetPageID(page, "AnswerPage",ws), "../AnswerPage")
-	End If
-	
-End Sub
-
- Sub card2_LinkClicked(Card As String, Action As String)
-	Dim card2 As ABMCard = page.Component("card2")
-	
-	card2.RotateAnimated(10.0,500, ABM.TWEEN_EASEINSINE, True)
-
-	Log("Target: "&Card&"  Action: "&Action)
 	
 End Sub
 
@@ -214,14 +190,6 @@ public Sub BuildPage()
 	
 	ABMShared.BuildNavigationBarextra(page,  "大赛报名","../images/logo.png", "Home", "Home", "Home")
 	
-	
-	'page.AddRowsM( 5, True, 0, 10, "").AddCellsOSMP( 1, 0, 0, 0, 12, 12, 12, 0,  0, 0, 0, "")
-	'page.AddRowsM( 1, True, 0, 10, "").AddCellsOSMP( 2, 0, 0, 0, 6, 6, 6, 0,   0,  10,10, "")
-	
-	'page.AddRowsM(1,True,0,10,"").AddCells12(1,"")
-
-	'IMPORTANT - Build the Grid before you start adding components ( with ConnectPage()!!! )
-	'page.BuildGrid
 	page.AddRows(2,True,"").AddCells12(1,"")
 	page.BuildGrid ' IMPORTANT!
 	
@@ -241,36 +209,6 @@ Sub logincancelbtn_Clicked(Target As String)
 	ABMLoginHandler.CancelLogin(page)
 End Sub
 
-Sub forgetpassbtn_Clicked(Target As String)
-	Log(Target)
-	'page.InputBox("inputbox","忘记密码","确认","取消",False,ABM.INPUTBOX_TYPE_QUESTION,ABM.INPUTBOX_QUESTIONTYPE_EMAIL,"","","邮箱不对","",False,ABM.MSGBOX_POS_CENTER_CENTER,"")
-	page.Msgbox2("forgetmsgbox","确认给已经填写的邮箱地址发送重制密码邮件吗？","忘记密码","确认","取消",False,ABM.MSGBOX_TYPE_QUESTION,False,ABM.MSGBOX_POS_CENTER_CENTER,"")
-End Sub
-
-Sub page_MsgBoxResult(returnName As String,result As String)
-	Log(result)
-	If result=ABM.MSGBOX_RESULT_CANCEL Then
-		Return
-	End If
-	If returnName="forgetmsgbox" Then
-		Dim mymodal As ABMModalSheet = page.ModalSheet("login")
-		Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
-		
-		Dim code As String '随机生成的数字代码
-		code=randomNum
-		Dim link As String
-		link="http://127.0.0.1:51045/verify?base64="&getBase64(logininp1.Text&"&"&code)
-		Dim map1 As Map
-		map1.Initialize
-		If File.Exists(File.DirApp,"verifyCodes.map") Then
-			File.ReadMap(File.DirApp,"verifyCodes.map")
-		End If
-		map1.Put(logininp1.Text,code)
-		File.WriteMap(File.DirApp,"verifyCodes.map",map1)
-		
-		sendEmail(logininp1.Text,"重制密码","点此链接重制密码。"&link)
-    End If
-End Sub
 '*************************************************************
 
 
@@ -288,11 +226,14 @@ Sub Page_NavigationbarClicked(Action As String, Value As String)
 		ABMLoginHandler.ShowLogin(page)
 		Return
 	End If
-	
+	If Action = "Home" Then
+		ABMShared.NavigateToPage(ws, ABMPageId, Value)
+		Return
+	End If
 	If Action <> "Home" Then
 		NotWorking(Action)  ' shortcut to show - Page Not Available!
-	  ' ABMShared.NavigateToPage(ws, ABMPageId, Value)  ' typically, this is not commented out and will direct the flow to the menu option (page) chosen...
-	End If   
+		' ABMShared.NavigateToPage(ws, ABMPageId, Value)  ' typically, this is not commented out and will direct the flow to the menu option (page) chosen...
+	End If
 End Sub
 
 Sub NotWorking(act As String)
@@ -301,98 +242,13 @@ Sub NotWorking(act As String)
 
 End Sub
 
-
-Sub BuildInfoContainer As ABMContainer
-	Dim infocont As ABMContainer
-	infocont.Initialize(page, "info", "infoContTheme")
-	infocont.AddRows(4,True,"").AddCells12(1,"")
-	infocont.BuildGrid ' IMPORTANT!
-	Dim infolbl As ABMLabel
-	infolbl.Initialize(page, "infolbl", "用户信息：",ABM.SIZE_H4,False,"leftLblTheme")
-	infocont.Cell(1,1).AddComponent(infolbl)
-	'Dim emaillbl As ABMLabel
-	'emaillbl.Initialize(page, "emaillbl", "邮箱：",ABM.SIZE_SPAN,False,"leftLblTheme")
-	'infocont.Cell(2,1).AddComponent(emaillbl)
-	Dim emailinp As ABMInput
-	emailinp.Initialize(page, "emailinp",ABM.INPUT_EMAIL,"邮箱", False, "input：")
-	emailinp.Enabled=False
-	emailinp.Text=ws.Session.GetAttribute("authName")
-	Dim emailverifiedinp As ABMInput
-	emailverifiedinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,"邮箱验证状态", False,"input：")
-	emailverifiedinp.Enabled=False
-	emailverifiedinp.Text=getVerified(emailinp.Text)
-	Dim nameinp As ABMInput
-	nameinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,"姓名", False, "input：")
-	nameinp.Enabled=False
-	nameinp.Text=getName(emailinp.Text)
-	infocont.Cell(2,1).AddComponent(emailinp)
-	infocont.Cell(3,1).AddComponent(emailverifiedinp)
-	infocont.Cell(4,1).AddComponent(nameinp)
-	Return infocont
-End Sub
-
-
-Sub getName(email As String) As String
-	Dim json As JSONParser
-	json.Initialize(File.ReadString(File.DirApp,"users.json"))
-	Dim map1,map2 As Map
-	map1.Initialize
-	map2.Initialize
-	map1=json.NextObject
-	map2=map1.Get(email)
-	Return map2.Get("xm")
-End Sub
-
-Sub getVerified(email As String) As String
-	Dim json As JSONParser
-	json.Initialize(File.ReadString(File.DirApp,"users.json"))
-	Dim map1,map2 As Map
-	map1.Initialize
-	map2.Initialize
-	map1=json.NextObject
-	map2=map1.Get(email)
-	Return map2.Get("verified")
-End Sub
-
-Sub sendEmail(target As String,subject As String,body As String)
-	Dim servUsername,servPassword As String
-	Dim list1 As List=File.ReadList(File.DirApp,"emailaccount.conf")
-	servUsername=list1.Get(0)
-	servPassword=list1.Get(1)
-	smtp.Initialize("smtp.163.com", "465",servUsername ,servPassword , "SMTP")
-	smtp.AuthMethod = smtp.AUTH_PLAIN
-	smtp.UseSSL=True
-	smtp.HtmlBody = False
-	smtp.To.Add(target)
-	smtp.Subject = subject
-	smtp.Body = body
-	smtp.Send
-End Sub
-
-Sub SMTP_MessageSent(Success As Boolean)
-	Log(Success)
-	If Success Then
-		ABMLoginHandler.closeSheet(page)
-		page.ShowToast("","","已发送",2000,False)
-		Log("Message sent successfully")
-	Else
-		Log("Error sending message")
-		Log(LastException.Message)
-	End If
-End Sub
-
-Sub getBase64(s As String) As String
-	Dim su As StringUtils
-	Dim bytes() As Byte
-	bytes=s.GetBytes("UTF-8")
-	Return su.EncodeBase64(bytes)
-End Sub
-
-Sub randomNum As String
-	Dim code As String
-	For i=0 To 9
-		code=code&Rnd(0,10)
-	Next
-	Log(code)
-	Return code
+Sub BuildTabContainer(id As String, Text As String) As ABMContainer
+	Dim Tabc As ABMContainer
+	Tabc.Initialize(page, id, "tabpagewhite")
+	Tabc.AddRows(2,True,"").AddCells12(1,"")
+	Tabc.BuildGrid ' IMPORTANT!
+	Dim lbl As ABMLabel
+	lbl.Initialize(page, id & "lbl", Text, ABM.SIZE_H5, True, "")
+	Tabc.Cell(1,1).AddComponent(lbl)
+	Return Tabc
 End Sub

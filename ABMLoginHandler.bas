@@ -42,7 +42,7 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 					' a match was found in the table - log this user in....
 					Dim user As Map = users.Get(0)
 					Page.ws.Session.SetAttribute("authType", "local")
-					Page.ws.Session.SetAttribute("authName", logininp1)
+					Page.ws.Session.SetAttribute("authName", logininp1.Text)
 					Page.ws.Session.SetAttribute("IsAuthorized", "true")
 					Page.ws.Session.SetAttribute("UserType", "" & user.Get("usertype") ) ' lowercase!				
 					Page.ws.Session.SetAttribute("UserID", "" & user.Get("userid") ) ' lowercase!
@@ -68,11 +68,11 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 					Dim map2 As Map
 				    map2=map1.Get(logininp1.Text)
 					If logininp2.Text = map2.Get("password") Then
-						Page.Msgbox("loginok", " We Shall Continue With Login in 5 seconds....! ",  "Welcome "&logininp1.Text,"Continue", False, ABM.MSGBOX_POS_TOP_CENTER,"")
-						Sleep(5000)
+						Page.Msgbox("loginok", " We Shall Continue With Login in 2 seconds....! ",  "Welcome "&logininp1.Text,"Continue", False, ABM.MSGBOX_POS_TOP_CENTER,"")
+						Sleep(2000)
 						Page.ShowToast("tid1","toastgreen"," Login Successful!",5000,False)
 						Page.ws.Session.SetAttribute("authType", "local")
-						Page.ws.Session.SetAttribute("authName", logininp1)
+						Page.ws.Session.SetAttribute("authName", logininp1.Text)
 						Page.ws.Session.SetAttribute("IsAuthorized", "true")
 						Page.ws.Session.SetAttribute("UserType", "admin"  )
 						Page.ws.Session.SetAttribute("UserID", "my_name_or_number"  )
@@ -114,6 +114,10 @@ public Sub CancelLogin(page As ABMPage)
 	
 End Sub
 
+public Sub closeSheet(page As ABMPage)
+	page.CloseModalSheet("login")
+End Sub
+
 
 
 Sub BuildLoginSheet(AppPage As ABMPage) As ABMModalSheet
@@ -150,6 +154,10 @@ Sub BuildLoginSheet(AppPage As ABMPage) As ABMModalSheet
 	Dim msbtn2 As ABMButton
 	msbtn2.InitializeFlat(AppPage, "logincancelbtn", "", "", "取消", "transparent")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn2)	
+	
+	Dim msbtn3 As ABMButton
+	msbtn3.InitializeFlat(AppPage, "forgetpassbtn", "", "", "忘记密码", "transparent")
+	myModal.Footer.Cell(1,1).AddComponent(msbtn3)
 
 	Return myModal
 End Sub

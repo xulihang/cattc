@@ -20,7 +20,7 @@ Sub Class_Globals
 	
 	Private ABMPageId As String = ""
 	' your own variables
-	
+	private smtp as SMTP
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
@@ -378,9 +378,7 @@ Sub wizB_NavigationFinished(ReturnName As String)
 		Log(email&xm&password)
 		Try
 			signupDone(email,xm,password)
-			page.ShowToast("doneToast","","注册成功",2000,False)
-			Sleep(2000)
-			ABMShared.NavigateToPage(ws,"HomePage","../HomePage")
+			sendEmail(email,"【计算机辅助翻译与技术传播大赛】验证邮件","请访问以下链接激活邮件："&generateLink(email))
 		Catch
 			page.ShowToast("doneToast","","注册失败",2000,False)
 			Log(LastException)
@@ -399,6 +397,7 @@ Sub signupDone(email As String,xm As String,password As String)
 	End If
 	map2.Put("xm",xm)
 	map2.Put("password",password)
+	map2.Put("verified","未验证")
 	map1.Put(email,map2)
 	Dim jsong As JSONGenerator
 	jsong.Initialize(map1)
@@ -419,4 +418,64 @@ Sub emailExists(email As String) As Boolean
 	Else
 		Return False
 	End If
+End Sub
+
+
+Sub sendEmail(target As String,subject As String,body As String)
+	Dim servUsername,servPassword As String
+	Dim list1 As List=File.ReadList(File.DirApp,"emailaccount.conf")
+	servUsername=list1.Get(0)
+	servPassword=list1.Get(1)
+	smtp.Initialize("smtp.163.com", "465",servUsername ,servPassword , "SMTP")
+	smtp.AuthMethod = smtp.AUTH_PLAIN
+	smtp.UseSSL=True
+	smtp.HtmlBody = False
+	smtp.To.Add(target)
+	smtp.Subject = subject
+	smtp.Body = body
+	smtp.Send
+End Sub
+
+Sub SMTP_MessageSent(Success As Boolean)
+	Log(Success)
+	If Success Then
+		page.ShowToast("doneToast","","注册成功,已发送一封验证邮件到您的邮箱。",2000,False)
+		Sleep(2000)
+		ABMShared.NavigateToPage(ws,"HomePage","../HomePage")
+		Log("Message sent successfully")
+	Else
+		Log("Error sending message")
+		Log(LastException.Message)
+	End If
+End Sub
+
+Sub getBase64(s As String) As String
+	Dim su As StringUtils
+	Dim bytes() As Byte
+	bytes=s.GetBytes("UTF-8")
+	Return su.EncodeBase64(bytes)
+End Sub
+
+Sub randomNum As String
+	Dim code As String
+	For i=0 To 9
+		code=code&Rnd(0,10)
+	Next
+	Log(code)
+	Return code
+End Sub
+
+Sub generateLink(email As String) As String
+	Dim code As String '随机生成的数字代码
+	code=randomNum
+	Dim link As String
+	link="http://127.0.0.1:51045/verify?type=new&base64="&getBase64(email&"&"&code)
+	Dim map1 As Map
+	map1.Initialize
+	If File.Exists(File.DirApp,"verifyCodes.map") Then
+		File.ReadMap(File.DirApp,"verifyCodes.map")
+	End If
+	map1.Put(email,code)
+	File.WriteMap(File.DirApp,"verifyCodes.map",map1)
+	Return link
 End Sub

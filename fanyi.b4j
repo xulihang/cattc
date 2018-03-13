@@ -7,10 +7,16 @@ Library3=abmaterial
 Library4=javaobject
 Library5=jsql
 Library6=json
+Library7=jnet
+Library8=apachestringutilsb4j
+Library9=jstringutils
 Module1=ABMPageTemplate
 Module10=ABMCacheScavenger
-Module11=DBM
-Module12=SignupWizardPage
+Module11=SignupWizardPage
+Module12=DBM
+Module13=AnswerPage
+Module14=verifyEmail
+Module15=resetPasswordPage
 Module2=ABMShared
 Module3=AboutPage
 Module4=ABMCacheControl
@@ -20,8 +26,8 @@ Module7=ABMApplication
 Module8=ABMLoginHandler
 Module9=HomePage
 NumberOfFiles=0
-NumberOfLibraries=6
-NumberOfModules=12
+NumberOfLibraries=9
+NumberOfModules=15
 Version=6.01
 @EndOfDesignText@
 'Non-UI application (console / server application)
@@ -58,14 +64,19 @@ Sub AppStart (Args() As String)
 	about.Initialize
 	Dim signup As SignupWizardPage
 	signup.Initialize
+	Dim answer As AnswerPage
+	answer.Initialize
+	Dim reset As resetPasswordPage
+	reset.Initialize
 		
 	' add the pages to the app
 	myApp.AddPage(myPage.Page)
 	myApp.AddPage(about.page)
 	myApp.AddPage(Homep.page)
 	myApp.AddPage(signup.page)
-	
-		
+	myApp.AddPage(answer.page)
+	myApp.AddPage(reset.page)
+	srvr.AddHandler("/verify","verifyEmail",False)
 	' start the server  - server name and port.
 	myApp.StartServer(srvr, "srvr", 51045)	
 	
