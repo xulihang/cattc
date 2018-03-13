@@ -1,0 +1,84 @@
+﻿AppType=StandardJava
+Build1=Default,com.ab.template
+Group=Default Group
+Library1=jcore
+Library2=jserver
+Library3=abmaterial
+Library4=javaobject
+Library5=jsql
+Library6=json
+Module1=ABMPageTemplate
+Module10=ABMCacheScavenger
+Module11=DBM
+Module12=SignupWizardPage
+Module2=ABMShared
+Module3=AboutPage
+Module4=ABMCacheControl
+Module5=ABMErrorHandler
+Module6=ABMRootFilter
+Module7=ABMApplication
+Module8=ABMLoginHandler
+Module9=HomePage
+NumberOfFiles=0
+NumberOfLibraries=6
+NumberOfModules=12
+Version=6.01
+@EndOfDesignText@
+'Non-UI application (console / server application)
+#Region  Project Attributes 
+	#CommandLineArgs:
+	#MergeLibraries: True 	
+#End Region
+
+Sub Process_Globals
+	Public srvr As Server
+	
+End Sub
+
+Sub AppStart (Args() As String)
+	' the user needs to login
+	ABMShared.NeedsAuthorization = False
+	
+	' Build the Theme
+	ABMShared.BuildTheme("mytheme")	
+	
+	' create the app
+	Dim myApp As ABMApplication
+	myApp.Initialize
+		
+	' create the pages
+	Dim myPage As ABMPageTemplate
+	myPage.Initialize
+
+	Dim Homep As HomePage
+	Homep.Initialize
+
+		
+	Dim about As AboutPage
+	about.Initialize
+	Dim signup As SignupWizardPage
+	signup.Initialize
+		
+	' add the pages to the app
+	myApp.AddPage(myPage.Page)
+	myApp.AddPage(about.page)
+	myApp.AddPage(Homep.page)
+	myApp.AddPage(signup.page)
+	
+		
+	' start the server  - server name and port.
+	myApp.StartServer(srvr, "srvr", 51045)	
+	
+	' When running on a remote server, uncomment this line below to record your log messages to a file!!!
+	' Helps you debug remotely...		
+	'ABMShared.RedirectOutput(File.DirApp, "errlogs.txt")
+			
+	StartMessageLoop
+End Sub
+
+
+
+
+
+
+
