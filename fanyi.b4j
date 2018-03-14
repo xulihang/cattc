@@ -10,24 +10,22 @@ Library6=json
 Library7=jnet
 Library8=apachestringutilsb4j
 Library9=jstringutils
-Module1=ABMPageTemplate
-Module10=ABMCacheScavenger
-Module11=SignupWizardPage
-Module12=resetPasswordPage
-Module13=verifyEmail
-Module14=AnswerPage
-Module15=DBM
-Module2=ABMShared
-Module3=AboutPage
-Module4=ABMCacheControl
-Module5=ABMErrorHandler
-Module6=ABMRootFilter
-Module7=ABMApplication
-Module8=ABMLoginHandler
-Module9=HomePage
+Module1=ABMShared
+Module10=SignupWizardPage
+Module11=verifyEmail
+Module12=AnswerPage
+Module13=DBM
+Module2=ABMCacheControl
+Module3=ABMErrorHandler
+Module4=ABMRootFilter
+Module5=ABMApplication
+Module6=ABMLoginHandler
+Module7=HomePage
+Module8=ABMCacheScavenger
+Module9=resetPasswordPage
 NumberOfFiles=0
 NumberOfLibraries=9
-NumberOfModules=15
+NumberOfModules=13
 Version=6.01
 @EndOfDesignText@
 'Non-UI application (console / server application)
@@ -53,15 +51,15 @@ Sub AppStart (Args() As String)
 	myApp.Initialize
 		
 	' create the pages
-	Dim myPage As ABMPageTemplate
-	myPage.Initialize
+	'Dim myPage As ABMPageTemplate
+	'myPage.Initialize
 
 	Dim Homep As HomePage
 	Homep.Initialize
 
 		
-	Dim about As AboutPage
-	about.Initialize
+	'Dim about As AboutPage
+	'about.Initialize
 	Dim signup As SignupWizardPage
 	signup.Initialize
 	Dim answer As AnswerPage
@@ -70,8 +68,8 @@ Sub AppStart (Args() As String)
 	reset.Initialize
 		
 	' add the pages to the app
-	myApp.AddPage(myPage.Page)
-	myApp.AddPage(about.page)
+	'myApp.AddPage(myPage.Page)
+	'myApp.AddPage(about.page)
 	myApp.AddPage(Homep.page)
 	myApp.AddPage(signup.page)
 	myApp.AddPage(answer.page)

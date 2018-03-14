@@ -148,7 +148,7 @@ Sub ConnectPage()
 	
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
-		ABMShared.ConnectNavigationBar(page)
+		ABMShared.ConnectNavigationBarLogined(page)
 	Else
 		Return
 	End If

@@ -94,8 +94,7 @@ End Sub
 
 Sub LogOff(page As ABMPage) 'ignore
 	' do whatever you have to do to log off your user
-			
-	page.ws.Session.SetAttribute("IsAuthorized", "")				
+	page.ws.Session.SetAttribute("IsAuthorized", "")
 	NavigateToPage(page.ws, page.GetPageID, "../")	
 End Sub
 
@@ -217,22 +216,23 @@ Sub BuildNavigationBarextra(page As ABMPage, Title As String, logo As String, Ac
 	Dim sbtopimg As ABMImage
 	sbtopimg.Initialize(page, "sbtopimg", logo, 1)
 '	sbtopimg.SetFixedSize(149, 85)	
-	sbtopimg.SetFixedSize(236, 49)
+	sbtopimg.SetFixedSize(49, 49)
 
-	page.NavigationBar.Initialize(page, "nav1", ABM.SIDEBAR_AUTO, Title, True, True, 330, 54, sbtopimg, ABM.COLLAPSE_ACCORDION, "nav1theme")
+	page.NavigationBar.Initialize(page, "nav1",ABM.SIDEBAR_AUTO, Title, True, True, 220, 54, sbtopimg, ABM.COLLAPSE_ACCORDION, "nav1theme")
 '	If ActiveTopReturnName = "Blog" Then
 '		page.NavigationBar.SetFadeEffect(0.75)
 '	End If
 	page.NavigationBar.SideBarLogoHeight = 55
+	
 	page.NavigationBar.ActiveTopReturnName = ActiveTopReturnName
 	page.NavigationBar.ActiveSideReturnName = ActiveSideReturnName
 	page.NavigationBar.ActiveSideSubReturnName = ActiveSideSubReturnName
 	
 	' you must add at least ONE dummy item if you want to add items to the topbar	in ConnectNaviagationBar
-	page.NavigationBar.AddTopItem("DUMMY", "DUMMY", "", "", True) ' must be true to allow connect top items
+	page.NavigationBar.AddTopItem("DUMMY", "{NBSP}", "", "", True) ' must be true to allow connect top items
 	
 	' you must add at least ONE dummy item if you want to add items to the sidebar
-	'page.NavigationBar.AddSideBarItem("DUMMY", "DUMMY", "", "")
+	'page.NavigationBar.AddSideBarItem("DUMMY", "{NBSP}", "", "")
 End Sub
 
 
@@ -241,13 +241,13 @@ Sub BuildNavigationBar(page As ABMPage, Title As String, logo As String, ActiveT
 	' we have to make an ABMImage from our logo url
 	Dim sbtopimg As ABMImage
 	sbtopimg.Initialize(page, "sbtopimg", logo, 1)
-	sbtopimg.SetFixedSize(236, 49)	
+	sbtopimg.SetFixedSize(49, 49)	
 
 '	page.NavigationBar.Initialize(page, "nav1", ABM.SIDEBAR_MANUAL_HIDEMEDIUMSMALL, Title, True, True, 330, 48, sbtopimg, ABM.COLLAPSE_ACCORDION, "nav1theme")	
 	
 '	page.NavigationBar.Initialize(page, "nav1", ABM.SIDEBAR_AUTO, Title, True, True, 330, 54, sbtopimg, ABM.COLLAPSE_ACCORDION, "nav1theme")
-	page.NavigationBar.Initialize(page, "nav1", ABM.SIDEBAR_MANUAL_ALWAYSHIDE, Title,  True,  True, 330,  54, sbtopimg, ABM.COLLAPSE_ACCORDION, "nav1theme")
-
+	page.NavigationBar.Initialize(page, "nav1", ABM.SIDEBAR_MANUAL_ALWAYSHIDE, Title,  True,  True, 220,  54, sbtopimg, ABM.COLLAPSE_ACCORDION, "nav1theme")
+   
 		
 	page.NavigationBar.TopBarDropDownConstrainWidth = False
 	page.NavigationBar.ActiveTopReturnName = ActiveTopReturnName
@@ -258,7 +258,24 @@ Sub BuildNavigationBar(page As ABMPage, Title As String, logo As String, ActiveT
 	page.NavigationBar.AddTopItem("DUMMY", "{NBSP}", "", "", False)
 	
 	' you must add at least ONE dummy item if you want to add items to the sidebar	
-	page.NavigationBar.AddSideBarItem("DUMMY", "{NBSP}", "", "")
+	'page.NavigationBar.AddSideBarItem("DUMMY", "{NBSP}", "", "")
+End Sub
+
+Sub ConnectNavigationBarLogined(page As ABMPage) 'ignore	
+	' Clear the dummies we created in BuildNavigationBar
+	page.NavigationBar.Clear
+	
+
+	' add NavigationBar items 
+	' direct the nav to an associated page in the last parameter - "../AboutPage"
+	'page.NavigationBar.AddSideBarItem("Home", "主页", "",  "../HomePage")
+	'page.NavigationBar.AddSideBarItem("LogOff", "登出", "mdi-action-exit-to-app",   "")
+	
+	' add the LOGOUT item on the title bar....
+	page.NavigationBar.AddTopItem("Home", "主页", "",  "../HomePage",True)
+	page.NavigationBar.AddTopItem("LogOff", "登出", "mdi-action-exit-to-app",   "",True)
+	
+	page.NavigationBar.Refresh ' IMPORTANT
 End Sub
 
 Sub ConnectNavigationBar(page As ABMPage) 'ignore	
@@ -268,34 +285,12 @@ Sub ConnectNavigationBar(page As ABMPage) 'ignore
 
 	' add NavigationBar items 
 	' direct the nav to an associated page in the last parameter - "../AboutPage"
-	page.NavigationBar.AddSideBarItem( "About",   "About / Help", "mdi-action-dashboard",   "../AboutPage")
-	page.NavigationBar.AddSideBarDivider 
-
-	page.NavigationBar.AddSideBarItem( "Reports",   "Template Page", "mdi-file-folder-open",  "../ABMPageTemplate")
-	page.NavigationBar.AddSideBarDivider 
-
-
-    ' these menu items just raise an error because they do not have a valid url!
-	page.NavigationBar.AddSideBarItem(   "Config", "Configure App", "mdi-action-settings-applications",  "")
-	page.NavigationBar.AddSideBarSubItem("Config", "Company",  "Setup Company", "mdi-action-home", "")
-	page.NavigationBar.AddSideBarSubItem("Config", "Users",  "Setup Users", "mdi-action-account-circle", "")
-		
-	page.NavigationBar.AddSideBarDivider 
-
-	page.NavigationBar.AddSideBarItem(   "Apps", "Applications", "mdi-navigation-apps",  "")
-	page.NavigationBar.AddSideBarSubItem("Apps",  "Tickets", "Download Stuff Page"   , "mdi-action-receipt","")
-	page.NavigationBar.AddSideBarSubItem("Apps",  "ECMviol", "Show Google Map", "mdi-action-trending-down", "")
-	page.NavigationBar.AddSideBarSubItem("Apps",  "GEOZone", "I Like Charts", "mdi-action-explore", "")
-	page.NavigationBar.AddSideBarSubItem("Apps",  "DLogs", "My Card Page", "mdi-action-view-list", "")
+	'page.NavigationBar.AddSideBarItem("Home", "主页", "",  "../HomePage")
 	
 	' add the LOGOUT item on the title bar....
-	page.NavigationBar.AddTopItem("Home", "主页", "",  "../HomePage",False)
-	page.NavigationBar.AddTopItem("LogOff", "登出", "mdi-action-exit-to-app",   "",False)
+	page.NavigationBar.AddTopItem("Home", "主页", "",  "../HomePage",True)
 	
-		
 	page.NavigationBar.Refresh ' IMPORTANT
-	
-	
 End Sub
 
 Sub ConnectNavigationBar2(page As ABMPage, ActiveTopReturnName As String, ActiveSideReturnName As String, ActiveSideSubReturnName As String, IsMember As Boolean)
@@ -304,7 +299,7 @@ Sub ConnectNavigationBar2(page As ABMPage, ActiveTopReturnName As String, Active
 	
 	' new behaviour: on each top item you can set if it should hide of not on a medium or small device.
 	page.NavigationBar.AddTopItem("Home",       "主页", "",       "../HomePage", True)
-	page.NavigationBar.AddTopItem("Login",  "登录", "mdi-action-account-circle", "",  False)
+	page.NavigationBar.AddTopItem("Login",  "登录", "mdi-action-account-circle", "",  True) 'visibility设置为true会自动隐藏
 	
 	page.NavigationBar.ActiveTopReturnName = ActiveTopReturnName
 	page.NavigationBar.ActiveSideReturnName = ActiveSideReturnName

@@ -153,7 +153,7 @@ Sub ConnectPage()
 		Sleep(2000)
 		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 	Else
-		ABMShared.ConnectNavigationBar2(page,  "Signup", "Signup", "Signup",  Not(ws.Session.GetAttribute2("IsAuthorized", "") = ""))
+		ABMShared.ConnectNavigationBar(page)
 	End If
 	
 	'page.Cell(1,1).AddComponent(ABMShared.BuildParagraphWithTheme(page, "content",  "Welcome To Our Home Page","contentTheme"))
@@ -171,19 +171,6 @@ Sub ConnectPage()
 
 	' NEW, because we use ShowLoaderType=ABM.LOADER_TYPE_MANUAL
 	page.FinishedLoading 'IMPORTANT
-	
-End Sub
-
-Sub card1_LinkClicked(Card As String, Action As String)
-	Log("Target: "&Card&"  Action: "&Action)
-End Sub
-
-Sub card2_LinkClicked(Card As String, Action As String)
-	Dim card2 As ABMCard = page.Component("card2")
-	
-	card2.RotateAnimated(10.0,500, ABM.TWEEN_EASEINSINE, True)
-
-	Log("Target: "&Card&"  Action: "&Action)
 	
 End Sub
 
@@ -220,25 +207,6 @@ public Sub BuildPage()
 	ABMLoginHandler.BuildModalSheets(page)
 	
 End Sub
-
-
-'*************************************************************
-
-' handle the login and cancel buttons from the login in form.
-Sub loginbtn_Clicked(Target As String)
-	ABMLoginHandler.HandleLogin("Home", page)
-End Sub
-
-Sub logincancelbtn_Clicked(Target As String)
-	ABMLoginHandler.CancelLogin(page)
-End Sub
-
-Sub forgetpassbtn_Clicked(Target As String)
-	Log(Target)
-    page.ShowToast("","","不支持在这里操作",1000,False)
-End Sub
-'*************************************************************
-
 
 Sub BuildContainer(ID As String) As ABMContainer
 	Dim cont As ABMContainer
@@ -482,7 +450,7 @@ Sub generateLink(email As String) As String
 	code=randomNum
 	Dim link As String
 	base64=getBase64(email&"&"&code)
-	link="http://xulihanghai.gicp.net:51045/verify?type=new&base64="&base64
+	link="http://139.199.28.147:51045/verify?type=new&base64="&base64
 	Dim map1 As Map
 	map1.Initialize
 	If File.Exists(File.DirApp,"verifyCodes.map") Then

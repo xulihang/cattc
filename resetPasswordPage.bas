@@ -20,7 +20,7 @@ Sub Class_Globals
 	
 	Private ABMPageId As String = ""
 	' your own variables
-	
+	Private email As String
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
@@ -155,7 +155,8 @@ Sub ConnectPage()
 	
     Dim emailinp As ABMInput
 	emailinp.Initialize(page,"emailinp",ABM.INPUT_EMAIL,"邮箱：",False,"")
-	emailinp.Text=File.ReadString(File.DirApp,"EmailToBeReset")
+	email=File.ReadString(File.DirApp,"EmailToBeReset")
+	emailinp.Text=email
 	emailinp.Enabled=False
 	File.Delete(File.DirApp,"EmailToBeReset") '避免其它人再修改
 	Dim pwd1 As ABMInput
@@ -209,12 +210,12 @@ Sub Page_NavigationbarClicked(Action As String, Value As String)
 End Sub
 
 Sub btn1_Clicked(Target As String)
-	Dim emailinp As ABMInput= page.Component("emailinp")
+	'Dim emailinp As ABMInput= page.Component("emailinp") 就不从页面获取了
 	Dim pwd1inp As ABMInput= page.Component("pwd1inp")
 	Dim pwd2inp As ABMInput= page.Component("pwd2inp")
 	Log(pwd1inp.Text)
     If pwd1inp.Text=pwd2inp.Text Then
-		changePwd(emailinp.Text,pwd1inp.Text)
+		changePwd(email,pwd1inp.Text)
 		page.Msgbox("","密码修改成功","通知","好的",False,ABM.MSGBOX_POS_CENTER_CENTER,"")
 	    Sleep(1000)
 		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
@@ -224,14 +225,14 @@ Sub btn1_Clicked(Target As String)
 
 End Sub
 
-Sub changePwd(email As String,pwd As String)
+Sub changePwd(emailaccount As String,pwd As String)
 	Dim jsonp As JSONParser
 	Dim jsong As JSONGenerator
 	If File.Exists(File.DirApp,"users.json") Then
 		jsonp.Initialize(File.ReadString(File.DirApp,"users.json"))
 		Dim map1,map2 As Map
 		map1=jsonp.NextObject
-		map2=map1.Get(email)
+		map2=map1.Get(emailaccount)
 		map2.Put("password",pwd)
 		jsong.Initialize(map1)
 		File.WriteString(File.DirApp,"users.json",jsong.ToString)

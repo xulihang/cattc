@@ -10,6 +10,7 @@ Sub Process_Globals
 End Sub
 
 public Sub BuildModalSheets(page As ABMPage)
+
 	' add a modal sheet template to enter contact information
 	page.AddModalSheetTemplate(BuildLoginSheet(page))
 	
@@ -77,17 +78,18 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 						Page.ws.Session.SetAttribute("UserType", "admin"  )
 						Page.ws.Session.SetAttribute("UserID", "my_name_or_number"  )
 				    Else
-						Page.Msgbox("loginok", " Can Not Login! ",  "抱歉！"&CRLF&"密码错误", "请重试", False, ABM.MSGBOX_POS_CENTER_CENTER,"")
+						Page.ShowToast("loginok", "", "抱歉！"&CRLF&"密码错误", 2000, False)
 						'Page.ShowModalSheet("wronginput")   ' this can be used to show wrong credentials for login...
 						Return
 				    End If
 				Else
-					Page.Msgbox("loginok", " Can Not Login! ",  "抱歉！"&CRLF&"该邮箱不存在", "请重试", False, ABM.MSGBOX_POS_CENTER_CENTER,"")
+					Page.ShowToast("loginwrong", "", "抱歉！"&CRLF&"该邮箱不存在", 2000, False)
+					'Page.Msgbox("loginok", " Can Not Login! ",  "抱歉！"&CRLF&"该邮箱不存在", "请重试", False, ABM.MSGBOX_POS_CENTER_CENTER,"")
 					'Page.ShowModalSheet("wronginput")   ' this can be used to show wrong credentials for login...
 					Return
 				End If
 			Else
-			    Page.Msgbox("loginok", " Can Not Login! ",  "SORRY!"&CRLF&" Wrong User Name or Password!", "Try Again", False, ABM.MSGBOX_POS_CENTER_CENTER,"")
+				Page.ShowToast("loginwrong", "", "抱歉！"&CRLF&"用户名或密码错误", 2000, False)
 			    Return
 		    End If
 		End If	
@@ -98,7 +100,7 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 	'  user was successful in login.  Now navigate to About Page...
 	
 	Page.CloseModalSheet("login")
-	ABMShared.NavigateToPage(Page.ws, Page.GetPageID,  "../HomePage")
+	ABMShared.NavigateToPage(Page.ws, Page.GetPageID,  "../")
 
 End Sub
 
@@ -148,15 +150,15 @@ Sub BuildLoginSheet(AppPage As ABMPage) As ABMModalSheet
 	
 	' create the button for the footer
 	Dim msbtn1 As ABMButton
-	msbtn1.InitializeFlat(AppPage, "loginbtn", "", "", "登录", "transparent")
+	msbtn1.InitializeFlat(AppPage, "loginbtn", "", "", "登录", "")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn1)	
 
 	Dim msbtn2 As ABMButton
-	msbtn2.InitializeFlat(AppPage, "logincancelbtn", "", "", "取消", "transparent")
+	msbtn2.InitializeFlat(AppPage, "logincancelbtn", "", "", "取消", "")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn2)	
 	
 	Dim msbtn3 As ABMButton
-	msbtn3.InitializeFlat(AppPage, "forgetpassbtn", "", "", "忘记密码", "transparent")
+	msbtn3.InitializeFlat(AppPage, "forgetpassbtn", "", "", "忘记密码", "")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn3)
 
 	Return myModal

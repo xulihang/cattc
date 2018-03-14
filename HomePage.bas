@@ -148,11 +148,13 @@ End Sub
 
 
 Sub ConnectPage()
+
+
 	Dim card1 As ABMCard
 	card1.InitializeAsCard(page,"card1","邀请函","第七届全国计算机辅助翻译大赛",ABM.CARD_NOTSPECIFIED,"")
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
-		ABMShared.ConnectNavigationBar(page)
+		ABMShared.ConnectNavigationBarLogined(page)
 		page.Cell(2,1).AddComponent(BuildInfoContainer)
 		card1.AddAction("查看答题情况")
 	Else
@@ -171,7 +173,10 @@ Sub ConnectPage()
 
 	' NEW, because we use ShowLoaderType=ABM.LOADER_TYPE_MANUAL
 	page.FinishedLoading 'IMPORTANT
-	
+
+	ws.GetElementByID("login-footer-forgetpassbtn").SetCSS("padding","0")
+	ws.GetElementByID("login-footer-loginbtn").SetCSS("padding","0")
+	ws.GetElementByID("login-footer-logincancelbtn").SetCSS("padding","0")
 End Sub
 
 Sub card1_LinkClicked(Card As String, Action As String)
@@ -260,7 +265,7 @@ Sub page_MsgBoxResult(returnName As String,result As String)
 		code=randomNum
 		Dim link As String
 		base64=getBase64(logininp1.Text&"&"&code)
-		link="http://xulihanghai.gicp.net:51045/verify?base64="&base64
+		link="http://139.199.28.147:51045/verify?base64="&base64
 		Dim map1 As Map
 		map1.Initialize
 		If File.Exists(File.DirApp,"verifyCodes.map") Then
