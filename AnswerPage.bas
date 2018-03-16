@@ -154,7 +154,7 @@ Sub ConnectPage()
 	End If
 
 	Dim tabs As ABMTabs
-	tabs.Initialize(page, "tabs", "")
+	tabs.Initialize(page, "tabs", "redTabs")
 	tabs.AddTab("tab1","汉译英",BuildTabContainer("tab1","汉译英"),3,3,3,3,3,3,True,True,"","")
 	tabs.AddTab("tab2","英译汉",BuildTabContainer("tab2","英译汉"),3,3,3,3,3,3,True,True,"","")
 	tabs.AddTab("tab3","技术传播",BuildTabContainer("tab3","技术传播"),3,3,3,3,3,3,True,True,"","")

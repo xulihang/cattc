@@ -136,10 +136,17 @@ Sub BuildTheme(themeName As String)
 
 
 	' a label theme
-	MyTheme.AddLabelTheme("lightbluezdepth")
-	MyTheme.Label("lightbluezdepth").ForeColor = ABM.COLOR_BLUE
-	MyTheme.Label("lightbluezdepth").FontWeight = "BOLD"
-	MyTheme.Label("lightbluezdepth").ZDepth = ABM.ZDEPTH_1
+	MyTheme.AddLabelTheme("lightredzdepth")
+	MyTheme.Label("lightredzdepth").BlockquoteColor=ABM.COLOR_RED
+	MyTheme.Label("lightredzdepth").ForeColor = ABM.COLOR_red
+	MyTheme.Label("lightredzdepth").FontWeight = "BOLD"
+	MyTheme.Label("lightredzdepth").ZDepth = ABM.ZDEPTH_1
+	
+	' a label theme
+	MyTheme.AddLabelTheme("lightred")
+	MyTheme.Label("lightred").BlockquoteColor=ABM.COLOR_RED
+	MyTheme.Label("lightred").ForeColor = ABM.COLOR_red
+	MyTheme.Label("lightred").FontWeight = "BOLD"
 
 	' a toast message theme
 	MyTheme.AddToastTheme("toastgreen")
@@ -168,12 +175,12 @@ Sub BuildTheme(themeName As String)
 	' more cell themes
 	MyTheme.AddCellTheme("tcell1")
 	MyTheme.Cell("tcell1").Align = ABM.CELL_ALIGN_CENTER
-	MyTheme.Cell("tcell1").BorderColor = ABM.COLOR_BLUE
+	MyTheme.Cell("tcell1").BorderColor = ABM.COLOR_red
 	MyTheme.Cell("tcell1").BorderWidth = 3
 	
 	MyTheme.AddCellTheme("tcell2")
 	MyTheme.Cell("tcell2").Align = ABM.CELL_ALIGN_LEFT
-	MyTheme.Cell("tcell2").BackColor = ABM.COLOR_BLUEGREY
+	MyTheme.Cell("tcell2").BackColor = ABM.COLOR_RED
 
 	MyTheme.AddCellTheme("tcell3")
 	MyTheme.Cell("tcell3").Align = ABM.CELL_ALIGN_RIGHT
@@ -186,8 +193,9 @@ Sub BuildTheme(themeName As String)
 	MyTheme.Switch("switch").LabelColor = ABM.COLOR_PURPLE
 
 	' the page theme	
-	MyTheme.Page.BackColor = ABM.COLOR_WHITE	
-'	MyTheme.Page.ConnectedIndicatorColor = ABM.COLOR_BLUE  ' set it to blue if you wish...
+	MyTheme.Page.BackColor = ABM.COLOR_WHITE
+		
+'	MyTheme.Page.ConnectedIndicatorColor = ABM.COLOR_red  ' set it to red if you wish...
 
 	' a Row theme
 	MyTheme.AddRowTheme("row1theme") 
@@ -195,7 +203,7 @@ Sub BuildTheme(themeName As String)
 	MyTheme.Row("row1theme").BorderColor = ABM.COLOR_BLACK
 	
 	MyTheme.AddNavigationBarTheme("nav1theme")
-	MyTheme.NavigationBar("nav1theme").TopBarBackColor = ABM.COLOR_BLUE  'ABM.COLOR_RED
+	MyTheme.NavigationBar("nav1theme").TopBarBackColor = ABM.COLOR_red  'ABM.COLOR_RED
 	MyTheme.NavigationBar("nav1theme").TopBarBackColorIntensity = ABM.INTENSITY_DARKEN1
 	MyTheme.NavigationBar("nav1theme").TopBarBold = True
 	MyTheme.NavigationBar("nav1theme").TopBarForeColor = ABM.COLOR_GREY
@@ -204,8 +212,29 @@ Sub BuildTheme(themeName As String)
 	MyTheme.NavigationBar("nav1theme").TopBarFontSize = "1.4rem"
 	MyTheme.NavigationBar("nav1theme").SideBarFontSize = "1.4rem"
 	
+	' a wizard theme
+	MyTheme.AddSmartWizardTheme("redWiz")
+	'MyTheme.SmartWizard("redWiz").StateActiveForeColor=ABM.COLOR_RED
+	'MyTheme.SmartWizard("redWiz").StateActiveBackColor=ABM.COLOR_RED
+	MyTheme.SmartWizard("redWiz").Colorize(ABM.COLOR_RED)
+	
+	MyTheme.AddButtonTheme("transparentbtn")
+	MyTheme.Button("transparentbtn").BackColor=ABM.COLOR_TRANSPARENT
+	
+	MyTheme.AddCardTheme("cardRedTheme")
+	MyTheme.Card("cardRedTheme").ActionForeColor=ABM.COLOR_RED
+	
+	MyTheme.AddModalSheetTheme("redModal")
+	MyTheme.ModalSheet("redModal").Colorize(ABM.COLOR_RED)
+	'MyTheme.ModalSheet("redModal").FooterBackColor=ABM.COLOR_RED
+	'MyTheme.ModalSheet("redModal").HeaderBackColor=ABM.COLOR_RED
+	
+	MyTheme.AddInputTheme("redInput")
+	MyTheme.Input("redInput").Colorize(ABM.COLOR_RED)
 
-
+	' a tab theme
+	MyTheme.AddTabsTheme("redTabs")
+	MyTheme.Tabs("redTabs").Colorize(ABM.COLOR_RED)
 
 End Sub
 
@@ -361,9 +390,20 @@ End Sub
 
 public Sub BuildParagraphBQWithZDepth(page As ABMPage, id As String, Text As String) As ABMLabel
 	Dim lbl As ABMLabel
-	lbl.Initialize(page, id, Text , ABM.SIZE_H5 , False,"") 
+	lbl.Initialize(page, id, Text , ABM.SIZE_H5 , False,"")
 	lbl.Margins("0",  "0", "0",  "0")
-	lbl.UseTheme("lightbluezdepth")
+	lbl.UseTheme("lightredzdepth")
+	lbl.IsBlockQuote = True
+	lbl.IsFlowText = True
+	
+	Return lbl
+End Sub
+
+public Sub BuildParagraphBQWithoutZDepth(page As ABMPage, id As String, Text As String) As ABMLabel
+	Dim lbl As ABMLabel
+	lbl.Initialize(page, id, Text , ABM.SIZE_H5 , False,"")
+	lbl.Margins("0",  "0", "0",  "0")
+	lbl.UseTheme("lightred")
 	lbl.IsBlockQuote = True
 	lbl.IsFlowText = True
 	

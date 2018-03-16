@@ -151,7 +151,7 @@ Sub ConnectPage()
 
 
 	Dim card1 As ABMCard
-	card1.InitializeAsCard(page,"card1","邀请函","第七届全国计算机辅助翻译大赛",ABM.CARD_NOTSPECIFIED,"")
+	card1.InitializeAsCard(page,"card1","邀请函","第七届全国计算机辅助翻译大赛",ABM.CARD_NOTSPECIFIED,"cardRedTheme")
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
 		ABMShared.ConnectNavigationBarLogined(page)

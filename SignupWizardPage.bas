@@ -158,7 +158,7 @@ Sub ConnectPage()
 	
 	'page.Cell(1,1).AddComponent(ABMShared.BuildParagraphWithTheme(page, "content",  "Welcome To Our Home Page","contentTheme"))
 	Dim wizB As ABMSmartWizard
-	wizB.Initialize(page,"wizB","上一步","下一步","完成","")
+	wizB.Initialize(page,"wizB","上一步","下一步","完成","redWiz")
 	wizB.AddStep("stepB1","第一步","邮箱","email",BuildContainer("StepB1Cont"),ABM.SMARTWIZARD_STATE_ACTIVE)
 	wizB.AddStep("stepB2","第二步","姓名","Name",BuildContainer("StepB2Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	wizB.AddStep("stepB3","第三步","密码","",BuildContainer("StepB3Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
@@ -218,7 +218,7 @@ Sub BuildContainer(ID As String) As ABMContainer
 			'Dim emaillbl As ABMLabel = ABMShared.BuildHeader(page, ID & "emaillbl", "邮箱地址")
 			'cont.Cell(1,1).AddComponent(emaillbl)
 			Dim emailinp As ABMInput
-			emailinp.Initialize(page, ID & "emailinp", ABM.INPUT_TEXT, "邮箱地址:", False, "input")
+			emailinp.Initialize(page, ID & "emailinp", ABM.INPUT_TEXT, "邮箱地址:", False, "redInput")
 			'emailinp.PlaceHolderText = "write your email address"
 			cont.Cell(1,1).AddComponent(emailinp)
 		Case "StepB2Cont"
@@ -227,7 +227,7 @@ Sub BuildContainer(ID As String) As ABMContainer
 			'Dim namelbl As ABMLabel = ABMShared.BuildHeader(page, ID & "namelbl", "姓名")
 			'cont.Cell(1,1).AddComponent(namelbl)
 			Dim nameinp As ABMInput
-			nameinp.Initialize(page, ID & "nameinp", ABM.INPUT_TEXT, "姓名:", False, "input")
+			nameinp.Initialize(page, ID & "nameinp", ABM.INPUT_TEXT, "姓名:", False, "redInput")
 			'nameinp.PlaceHolderText = "write your name"
 			cont.Cell(1,1).AddComponent(nameinp)
 		Case "StepB3Cont"
@@ -236,7 +236,7 @@ Sub BuildContainer(ID As String) As ABMContainer
 			'Dim pwdlbl As ABMLabel = ABMShared.BuildHeader(page, ID & "pwdlbl", "密码")
 			'cont.Cell(1,1).AddComponent(pwdlbl)
 			Dim addressinp As ABMInput
-			addressinp.Initialize(page, ID & "passwordinp",ABM.INPUT_PASSWORD,"密码:", False, "input")
+			addressinp.Initialize(page, ID & "passwordinp",ABM.INPUT_PASSWORD,"密码:", False, "redInput")
 			'addressinp.PlaceHolderText = "write your address"
 			cont.Cell(1,1).AddComponent(addressinp)
 	End Select
