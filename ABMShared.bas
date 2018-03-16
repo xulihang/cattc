@@ -153,6 +153,7 @@ Sub BuildTheme(themeName As String)
 	MyTheme.Toast("toastgreen").Rounded = True
 	MyTheme.Toast("toastgreen").ActionForeColor = ABM.COLOR_BLACK
 	MyTheme.Toast("toastgreen").BackColor = ABM.COLOR_GREEN
+	
 
 	' button theme to change back color
 	MyTheme.AddButtonTheme("amber")
@@ -206,7 +207,7 @@ Sub BuildTheme(themeName As String)
 	MyTheme.NavigationBar("nav1theme").TopBarBackColor = ABM.COLOR_red  'ABM.COLOR_RED
 	MyTheme.NavigationBar("nav1theme").TopBarBackColorIntensity = ABM.INTENSITY_DARKEN1
 	MyTheme.NavigationBar("nav1theme").TopBarBold = True
-	MyTheme.NavigationBar("nav1theme").TopBarForeColor = ABM.COLOR_GREY
+	MyTheme.NavigationBar("nav1theme").TopBarForeColor = ABM.COLOR_WHITE
 	MyTheme.NavigationBar("nav1theme").TopBarForeColorIntensity = ABM.INTENSITY_LIGHTEN2
 	MyTheme.NavigationBar("nav1theme").TopBarActiveForeColor = ABM.COLOR_WHITE
 	MyTheme.NavigationBar("nav1theme").TopBarFontSize = "1.4rem"
@@ -217,6 +218,7 @@ Sub BuildTheme(themeName As String)
 	'MyTheme.SmartWizard("redWiz").StateActiveForeColor=ABM.COLOR_RED
 	'MyTheme.SmartWizard("redWiz").StateActiveBackColor=ABM.COLOR_RED
 	MyTheme.SmartWizard("redWiz").Colorize(ABM.COLOR_RED)
+	MyTheme.SmartWizard("redWiz").SetResponsiveType(ABM.SMARTWIZARD_RESPONSIVE_USEALTICON, 601)
 	
 	MyTheme.AddButtonTheme("transparentbtn")
 	MyTheme.Button("transparentbtn").BackColor=ABM.COLOR_TRANSPARENT
@@ -235,6 +237,11 @@ Sub BuildTheme(themeName As String)
 	' a tab theme
 	MyTheme.AddTabsTheme("redTabs")
 	MyTheme.Tabs("redTabs").Colorize(ABM.COLOR_RED)
+	
+	' a msgbox theme
+	MyTheme.AddMsgBoxTheme("redmsgbox")
+	MyTheme.MsgBox("redmsgbox").Colorize(ABM.COLOR_RED)
+
 
 End Sub
 

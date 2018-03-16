@@ -216,11 +216,11 @@ Sub btn1_Clicked(Target As String)
 	Log(pwd1inp.Text)
     If pwd1inp.Text=pwd2inp.Text Then
 		changePwd(email,pwd1inp.Text)
-		page.Msgbox("","密码修改成功","通知","好的",False,ABM.MSGBOX_POS_CENTER_CENTER,"")
+		page.Msgbox("","密码修改成功","通知","好的",False,ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
 	    Sleep(1000)
 		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 	Else
-	    page.Msgbox("","密码不一致","错误","好的",False,ABM.MSGBOX_POS_CENTER_CENTER,"")	
+		page.Msgbox("","密码不一致","错误","好的",False,ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
     End If
 
 End Sub

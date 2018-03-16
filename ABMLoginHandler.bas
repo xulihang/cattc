@@ -25,6 +25,7 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 		'Dim loginpwd As String = ABM.LoadLogin(AppPage, AppName)
         Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
         Dim logininp2 As ABMInput = mymodal.Content.Component("logininp2")
+
 		
 		
 		' 		The Page.ws.Session.SetAttribute("") types (cookies) can be used for many different purposes.
@@ -69,9 +70,9 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 					Dim map2 As Map
 				    map2=map1.Get(logininp1.Text)
 					If logininp2.Text = map2.Get("password") Then
-						Page.Msgbox("loginok", " We Shall Continue With Login in 2 seconds....! ",  "Welcome "&logininp1.Text,"Continue", False, ABM.MSGBOX_POS_TOP_CENTER,"")
+						Page.Msgbox("loginok", "登录成功，两秒后跳转页面",  "欢迎"&logininp1.Text,"继续", False, ABM.MSGBOX_POS_TOP_CENTER,"redmsgbox")
 						Sleep(2000)
-						Page.ShowToast("tid1","toastgreen"," Login Successful!",5000,False)
+						'Page.ShowToast("tid1","toastgreen"," Login Successful!",5000,False)
 						Page.ws.Session.SetAttribute("authType", "local")
 						Page.ws.Session.SetAttribute("authName", logininp1.Text)
 						Page.ws.Session.SetAttribute("IsAuthorized", "true")
@@ -107,6 +108,9 @@ End Sub
 
 public Sub ShowLogin(page As ABMPage)
 	page.ShowModalSheet("login")
+	Dim mymodal As ABMModalSheet = page.ModalSheet("login")
+	Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
+	logininp1.SetFocus
 End Sub
 
 public Sub CancelLogin(page As ABMPage)

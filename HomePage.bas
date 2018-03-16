@@ -249,7 +249,7 @@ End Sub
 Sub forgetpassbtn_Clicked(Target As String)
 	Log(Target)
 	'page.InputBox("inputbox","忘记密码","确认","取消",False,ABM.INPUTBOX_TYPE_QUESTION,ABM.INPUTBOX_QUESTIONTYPE_EMAIL,"","","邮箱不对","",False,ABM.MSGBOX_POS_CENTER_CENTER,"")
-	page.Msgbox2("forgetmsgbox","确认给已经填写的邮箱地址发送重制密码邮件吗？","忘记密码","确认","取消",False,ABM.MSGBOX_TYPE_QUESTION,False,ABM.MSGBOX_POS_CENTER_CENTER,"")
+	page.Msgbox2("forgetmsgbox","确认给已经填写的邮箱地址发送重制密码邮件吗？","忘记密码","确认","取消",False,ABM.MSGBOX_TYPE_QUESTION,False,ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
 End Sub
 
 Sub page_MsgBoxResult(returnName As String,result As String)
@@ -303,7 +303,7 @@ End Sub
 
 Sub NotWorking(act As String)
 	
-	page.Msgbox("login_not", " These pages will not require authorization... ",  "SORRY!"&CRLF&act&" Page Not Available", "Close", False, ABM.MSGBOX_POS_CENTER_CENTER,"")
+	page.Msgbox("login_not", " These pages will not require authorization... ",  "SORRY!"&CRLF&act&" Page Not Available", "Close", False, ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
 
 End Sub
 
