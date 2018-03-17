@@ -158,13 +158,18 @@ Sub ConnectPage()
 		page.Cell(2,1).AddComponent(BuildInfoContainer)
 		card1.AddAction("查看答题情况")
 	Else
+		Dim bmlbl As ABMLabel
+		bmlbl.Initialize(page,"bmlbl","报名费（registry fee）：30 RMB",ABM.SIZE_SPAN,False,"lightredzdepth")
+		page.Cell(2,1).AddComponent(bmlbl)
 		ABMShared.ConnectNavigationBar2(page,  "Home", "Home", "Home",  Not(ws.Session.GetAttribute2("IsAuthorized", "") = ""))		
 		card1.AddAction("报名")
 	End If
 
 	
-	
+
 	page.Cell(1,1).AddComponent(card1)
+	
+
 
 	
 	page.Refresh ' IMPORTANT
@@ -311,7 +316,7 @@ End Sub
 Sub BuildInfoContainer As ABMContainer
 	Dim infocont As ABMContainer
 	infocont.Initialize(page, "info", "infoContTheme")
-	infocont.AddRows(4,True,"").AddCells12(1,"")
+	infocont.AddRows(5,True,"").AddCells12(1,"")
 	infocont.BuildGrid ' IMPORTANT!
 	Dim infolbl As ABMLabel
 	infolbl.Initialize(page, "infolbl", "用户信息：",ABM.SIZE_H4,False,"leftLblTheme")
@@ -323,17 +328,25 @@ Sub BuildInfoContainer As ABMContainer
 	emailinp.Initialize(page, "emailinp",ABM.INPUT_EMAIL,"邮箱", False, "input：")
 	emailinp.Enabled=False
 	emailinp.Text=ws.Session.GetAttribute("authName")
-	Dim emailverifiedinp As ABMInput
-	emailverifiedinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,"邮箱验证状态", False,"input：")
-	emailverifiedinp.Enabled=False
-	emailverifiedinp.Text=getVerified(emailinp.Text)
 	Dim nameinp As ABMInput
 	nameinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,"姓名", False, "input：")
 	nameinp.Enabled=False
 	nameinp.Text=getName(emailinp.Text)
+
+	Dim emailverifiedinp As ABMInput
+	emailverifiedinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,"邮箱验证状态", False,"input：")
+	emailverifiedinp.Enabled=False
+	emailverifiedinp.Text=getVerified(emailinp.Text)
+	Dim paidinp As ABMInput
+	paidinp.Initialize(page, "paidinp",ABM.INPUT_TEXT,"已付费", False, "input：")
+	paidinp.Enabled=False
+	paidinp.Text=getPaid(emailinp.Text)
+
+
 	infocont.Cell(2,1).AddComponent(emailinp)
-	infocont.Cell(3,1).AddComponent(emailverifiedinp)
-	infocont.Cell(4,1).AddComponent(nameinp)
+	infocont.Cell(3,1).AddComponent(nameinp)
+	infocont.Cell(4,1).AddComponent(emailverifiedinp)
+	infocont.Cell(5,1).AddComponent(paidinp)
 	Return infocont
 End Sub
 
@@ -358,6 +371,17 @@ Sub getVerified(email As String) As String
 	map1=json.NextObject
 	map2=map1.Get(email)
 	Return map2.Get("verified")
+End Sub
+
+Sub getPaid(email As String) As String
+	Dim json As JSONParser
+	json.Initialize(File.ReadString(File.DirApp,"users.json"))
+	Dim map1,map2 As Map
+	map1.Initialize
+	map2.Initialize
+	map1=json.NextObject
+	map2=map1.Get(email)
+	Return map2.Get("paid")
 End Sub
 
 Sub sendEmail(target As String,subject As String,body As String)

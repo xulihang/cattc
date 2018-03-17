@@ -386,6 +386,7 @@ Sub signupDone(email As String,xm As String,password As String)
 	map2.Put("xm",xm)
 	map2.Put("password",password)
 	map2.Put("verified","未验证")
+	map2.Put("paid","未付款")
 	map1.Put(email,map2)
 	Dim jsong As JSONGenerator
 	jsong.Initialize(map1)
