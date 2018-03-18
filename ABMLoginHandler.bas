@@ -29,16 +29,29 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
         Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
         Dim logininp2 As ABMInput = mymodal.Content.Component("logininp2")
 		If File.Exists(File.DirApp&"/logs",logininp1.Text&".log") Then
+			Dim logstring As String
+			logstring=File.ReadString(File.DirApp&"/logs",logininp1.Text&".log")
 			Dim triedTimes As Long
-			triedTimes=File.ReadString(File.DirApp&"/logs",logininp1.Text&".log")
 			Dim difference  As Int
-			difference=DateTime.Now-triedTimes
-			If difference<60000 Then
-				Page.ShowToast("loginok", "", "密码错误次数过多，请"&(60-difference/1000)&"秒以后再试", 2000, False)
-				Return
+			If logstring.Contains("lastTry:") Then '之前的错误尝试，没有被清除
+				triedTimes=logstring.Replace("lastTry:","")
+				difference=DateTime.Now-triedTimes
+				If difference>120000 Then
+					If ABMShared.wrongRecord.ContainsKey(logininp1.Text) Then
+						ABMShared.wrongRecord.Remove(logininp1) '已经是两分钟前的错误尝试了，就给清空了
+					End If
+					File.Delete(File.DirApp&"/logs",logininp1.Text&".log")
+				End If
 			Else
-				File.Delete(File.DirApp&"/logs",logininp1.Text&".log")
-				ABMShared.wrongRecord.Put(logininp1.Text,0)
+				triedTimes=logstring
+				difference=DateTime.Now-triedTimes
+				If difference<60000 Then
+					Page.ShowToast("loginok", "", "密码错误次数过多，请"&(60-difference/1000)&"秒以后再试", 2000, False)
+					Return
+				Else
+					File.Delete(File.DirApp&"/logs",logininp1.Text&".log")
+					ABMShared.wrongRecord.Remove(logininp1.Text)
+				End If
 			End If
 		End If
 		
@@ -99,8 +112,10 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 							Dim wrongTimes As Int
 							wrongTimes=ABMShared.wrongRecord.Get(logininp1.Text)
 							wrongTimes=wrongTimes+1
+							Log(wrongTimes)
 							ABMShared.wrongRecord.Put(logininp1.Text,wrongTimes)
 							If wrongTimes<5 Then
+								File.WriteString(File.DirApp&"/logs",logininp1.Text&".log","lastTry:"&DateTime.Now)
 								Page.ShowToast("loginok", "", "抱歉！"&CRLF&"密码错误", 2000, False)
 							Else
 								Page.ShowToast("loginok", "", "密码错误次数过多，请1分钟以后再试", 2000, False)
@@ -108,6 +123,7 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 							End If
 						Else
 							ABMShared.wrongRecord.Put(logininp1.Text,1)
+							File.WriteString(File.DirApp&"/logs",logininp1.Text&".log","lastTry:"&DateTime.Now)
 							Page.ShowToast("loginok", "", "抱歉！"&CRLF&"密码错误", 2000, False)
 						End If
 						'Page.ShowModalSheet("wronginput")   ' this can be used to show wrong credentials for login...
