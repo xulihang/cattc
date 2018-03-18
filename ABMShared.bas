@@ -250,7 +250,7 @@ Sub BuildTheme(themeName As String)
 	
 	' the footer theme
 	MyTheme.AddContainerTheme("footertheme")
-	MyTheme.Container("footertheme").BackColor = ABM.COLOR_TRANSPARENT
+	MyTheme.Container("footertheme").BackColor = ABM.COLOR_WHITE
 	MyTheme.Container("footertheme").ZDepth=ABM.ZDEPTH_REMOVE
 
 

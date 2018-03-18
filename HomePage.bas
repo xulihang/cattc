@@ -268,6 +268,7 @@ Sub page_MsgBoxResult(returnName As String,result As String)
 		Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
 		If checkEmail(logininp1.Text)=False Then
 			page.ShowToast("","","邮箱不存在",2000,False)
+			Return
 		End If
 		Dim code,base64 As String '随机生成的数字代码
 		code=randomNum
