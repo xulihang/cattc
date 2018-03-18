@@ -161,7 +161,7 @@ Sub ConnectPage()
 	Dim wizB As ABMSmartWizard
 	wizB.Initialize(page,"wizB","上一步","下一步","完成","redWiz")
 	
-	wizB.AddStep("stepB1","第一步","邮箱","email",BuildContainer("StepB1Cont"),ABM.SMARTWIZARD_STATE_ACTIVE)
+	wizB.AddStep("stepB1","第一步","邮箱","mdi-communication-email",BuildContainer("StepB1Cont"),ABM.SMARTWIZARD_STATE_ACTIVE)
 	wizB.AddStep("stepB2","第二步","姓名","mdi-action-account-circle",BuildContainer("StepB2Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	wizB.AddStep("stepB3","第三步","密码","",BuildContainer("StepB3Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	page.Cell(1,1).AddComponent(wizB)
@@ -358,6 +358,8 @@ Sub wizB_NavigationFinished(ReturnName As String)
 		If emailSent=True Then
 			page.ShowToast("","","请求发送中，请等待",1000,False)
 			Return
+		Else
+			page.ShowToast("","","请求发送中，请等待",1000,False)
 		End If
 		If emailExists(email) Then '提交阶段再次验证
 			page.ShowToast("doneToast","","注册失败，邮箱已被注册",2000,False)
@@ -429,11 +431,14 @@ End Sub
 Sub SMTP_MessageSent(Success As Boolean)
 	Log(Success)
 	If Success Then
-		page.ShowToast("doneToast","","注册成功,已发送一封验证邮件到您的邮箱。",2000,False)
-		Sleep(2000)
+		page.ShowToast("doneToast","","注册成功,已发送一封验证邮件到您的邮箱。",3000,False)
+		Sleep(3000)
 		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 		Log("Message sent successfully")
 	Else
+		page.ShowToast("doneToast","","注册已成功,但验证邮件发送失败。",5000,False)
+		Sleep(5000)
+		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 		Log("Error sending message")
 		Log(LastException.Message)
 	End If
@@ -461,7 +466,7 @@ Sub generateLink(email As String) As String
 	code=randomNum
 	Dim link As String
 	base64=getBase64(email&"&"&code)
-	link="http://139.199.28.147:51045/verify?type=new&base64="&base64
+	link="http://xulihang.me/verify?type=new&base64="&base64
 	Dim map1 As Map
 	map1.Initialize
 	If File.Exists(File.DirApp,"verifyCodes.map") Then
