@@ -168,7 +168,7 @@ Sub ConnectPage()
 	
 
 	page.Cell(1,1).AddComponent(card1)
-	
+	ABMShared.ConnectFooter(page)
 
 
 	
@@ -236,6 +236,7 @@ public Sub BuildPage()
 	page.BuildGrid ' IMPORTANT!
 	
 	ABMLoginHandler.BuildModalSheets(page)
+	ABMShared.BuildFooter(page)
 	
 End Sub
 
@@ -270,7 +271,7 @@ Sub page_MsgBoxResult(returnName As String,result As String)
 		code=randomNum
 		Dim link As String
 		base64=getBase64(logininp1.Text&"&"&code)
-		link="http://139.199.28.147:51045/verify?base64="&base64
+		link="http://xulihang.me/verify?base64="&base64
 		Dim map1 As Map
 		map1.Initialize
 		If File.Exists(File.DirApp,"verifyCodes.map") Then
@@ -338,7 +339,7 @@ Sub BuildInfoContainer As ABMContainer
 	emailverifiedinp.Enabled=False
 	emailverifiedinp.Text=getVerified(emailinp.Text)
 	Dim paidinp As ABMInput
-	paidinp.Initialize(page, "paidinp",ABM.INPUT_TEXT,"已付费", False, "input：")
+	paidinp.Initialize(page, "paidinp",ABM.INPUT_TEXT,"付费情况", False, "input：")
 	paidinp.Enabled=False
 	paidinp.Text=getPaid(emailinp.Text)
 
@@ -415,7 +416,7 @@ Sub getBase64(s As String) As String
 	Dim su As StringUtils
 	Dim bytes() As Byte
 	bytes=s.GetBytes("UTF-8")
-	Return su.EncodeBase64(bytes)
+	Return su.EncodeUrl(su.EncodeBase64(bytes),"UTF8")
 End Sub
 
 Sub randomNum As String

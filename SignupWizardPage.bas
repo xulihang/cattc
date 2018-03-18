@@ -165,7 +165,7 @@ Sub ConnectPage()
 	wizB.AddStep("stepB2","第二步","姓名","mdi-action-account-circle",BuildContainer("StepB2Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	wizB.AddStep("stepB3","第三步","密码","",BuildContainer("StepB3Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	page.Cell(1,1).AddComponent(wizB)
-
+	ABMShared.ConnectFooter(page)
 	
 	page.Refresh ' IMPORTANT
  
@@ -207,6 +207,7 @@ public Sub BuildPage()
 	page.BuildGrid
 	
 	ABMLoginHandler.BuildModalSheets(page)
+	ABMShared.BuildFooter(page)
 	
 End Sub
 

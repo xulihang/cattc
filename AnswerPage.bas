@@ -160,6 +160,7 @@ Sub ConnectPage()
 	tabs.AddTab("tab3","技术传播",BuildTabContainer("tab3","技术传播"),3,3,3,3,3,3,True,True,"","")
 	
 	page.Cell(1,1).AddComponent(tabs)
+	ABMShared.ConnectFooter(page)
 	page.Refresh ' IMPORTANT
  
 	page.RestoreNavigationBarPosition
@@ -194,6 +195,7 @@ public Sub BuildPage()
 	page.BuildGrid ' IMPORTANT!
 	
 	ABMLoginHandler.BuildModalSheets(page)
+	ABMShared.BuildFooter(page)
 	
 End Sub
 

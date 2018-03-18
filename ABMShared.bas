@@ -118,6 +118,12 @@ Sub BuildTheme(themeName As String)
 	MyTheme.Label("lbltheme2").ForeColor = ABM.COLOR_RED
 	MyTheme.Label("lbltheme2").FontWeight = "BOLD"
 	MyTheme.Label("lbltheme2").Align = ABM.TEXTALIGN_CENTER
+	
+	' a red label theme with no bold
+	MyTheme.AddLabelTheme("lbltheme3")
+	MyTheme.Label("lbltheme3").ForeColor = ABM.COLOR_RED
+	MyTheme.Label("lbltheme3").FontWeight = "normal"
+	MyTheme.Label("lbltheme3").Align = ABM.TEXTALIGN_CENTER
 
 
 	MyTheme.AddLabelTheme("lblthemec")
@@ -128,10 +134,10 @@ Sub BuildTheme(themeName As String)
 
 
 
-	MyTheme.AddLabelTheme("lbltheme3")
-	MyTheme.Label("lbltheme3").ForeColor = ABM.COLOR_CYAN
-	MyTheme.Label("lbltheme3").FontWeight = "BOLD"
-	MyTheme.Label("lbltheme3").Align = ABM.TEXTALIGN_CENTER
+	MyTheme.AddLabelTheme("lbltheme4")
+	MyTheme.Label("lbltheme4").ForeColor = ABM.COLOR_CYAN
+	MyTheme.Label("lbltheme4").FontWeight = "BOLD"
+	MyTheme.Label("lbltheme4").Align = ABM.TEXTALIGN_CENTER
 
 
 
@@ -241,6 +247,12 @@ Sub BuildTheme(themeName As String)
 	' a msgbox theme
 	MyTheme.AddMsgBoxTheme("redmsgbox")
 	MyTheme.MsgBox("redmsgbox").Colorize(ABM.COLOR_RED)
+	
+	' the footer theme
+	MyTheme.AddContainerTheme("footertheme")
+	MyTheme.Container("footertheme").BackColor = ABM.COLOR_TRANSPARENT
+	MyTheme.Container("footertheme").ZDepth=ABM.ZDEPTH_REMOVE
+
 
 
 End Sub
@@ -295,6 +307,42 @@ Sub BuildNavigationBar(page As ABMPage, Title As String, logo As String, ActiveT
 	
 	' you must add at least ONE dummy item if you want to add items to the sidebar	
 	'page.NavigationBar.AddSideBarItem("DUMMY", "{NBSP}", "", "")
+End Sub
+
+Sub BuildFooter(page As ABMPage)
+	page.isFixedFooter= True
+	' because we have a fixed footer at the bottom, we have to adjust the padding of the body in pixels
+	page.PaddingBottom = 20
+	page.Footer.AddRows(1,True,"").AddCells12(1,"")
+	page.Footer.BuildGrid ' IMPORTANT!
+
+	page.Footer.UseTheme("footertheme")
+End Sub
+
+Sub ConnectFooter(page As ABMPage)
+	Dim ScreenWidth As Int
+	Dim wh As String = ABM.GetBrowserWidthHeight(page)
+	Log(wh)
+	Dim lbl1 As ABMLabel
+	lbl1.Initialize(page, "footlbl1", "TAPKU Copyright @2017 技术支持请前往官方QQ群",ABM.SIZE_PARAGRAPH, False, "lbltheme3")
+	Dim whspl() As String = Regex.Split(";", wh)
+	If whspl(0) < whspl(1) Then
+		ScreenWidth = whspl(0)
+	Else
+		ScreenWidth = whspl(1)
+	End If
+	If ScreenWidth < 601 Then
+		page.PaddingBottom = 0
+		page.Footer.CloseContent '移动设备上不要footer了，不然太拥挤
+	Else
+		page.Footer.Cell(1,1).AddComponent(lbl1)
+	End If
+
+	
+	
+	'Dim lbl2 As ABMLabel
+	'lbl2.Initialize(page, "footlbl2", "ABMaterial Copyright @2015-2017{BR}By Alain Bailleul{BR}{BR}Email: alain.bailleul@telenet.be",ABM.SIZE_PARAGRAPH, False, "normal")
+	'page.Footer.Cell(1,2).AddComponent(lbl2)
 End Sub
 
 Sub ConnectNavigationBarLogined(page As ABMPage) 'ignore	
