@@ -266,7 +266,9 @@ Sub page_MsgBoxResult(returnName As String,result As String)
 	If returnName="forgetmsgbox" Then
 		Dim mymodal As ABMModalSheet = page.ModalSheet("login")
 		Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
-		
+		If checkEmail(logininp1.Text)=False Then
+			page.ShowToast("","","邮箱不存在",2000,False)
+		End If
 		Dim code,base64 As String '随机生成的数字代码
 		code=randomNum
 		Dim link As String
@@ -372,6 +374,20 @@ Sub getVerified(email As String) As String
 	map1=json.NextObject
 	map2=map1.Get(email)
 	Return map2.Get("verified")
+End Sub
+
+Sub checkEmail(email As String) As Boolean
+	Dim json As JSONParser
+	json.Initialize(File.ReadString(File.DirApp,"users.json"))
+	Dim map1,map2 As Map
+	map1.Initialize
+	map2.Initialize
+	map1=json.NextObject
+    If map1.ContainsKey(email) Then
+		Return True
+	Else
+		Return False
+    End If
 End Sub
 
 Sub getPaid(email As String) As String

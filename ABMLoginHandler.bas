@@ -7,6 +7,7 @@ Version=5.9
 
 Sub Process_Globals
 	Dim ABM As ABMaterial
+
 End Sub
 
 public Sub BuildModalSheets(page As ABMPage)
@@ -20,12 +21,26 @@ End Sub
 
 public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 	Dim mymodal As ABMModalSheet = Page.ModalSheet("login")
-	
+	If ABMShared.wrongRecord.IsInitialized=False Then
+		ABMShared.wrongRecord.Initialize
+	End If
 	If Page.ws.Session.GetAttribute2("IsAuthorized", "") = "" Then
 		'Dim loginpwd As String = ABM.LoadLogin(AppPage, AppName)
         Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
         Dim logininp2 As ABMInput = mymodal.Content.Component("logininp2")
-
+		If File.Exists(File.DirApp&"/logs",logininp1.Text&".log") Then
+			Dim triedTimes As Long
+			triedTimes=File.ReadString(File.DirApp&"/logs",logininp1.Text&".log")
+			Dim difference  As Int
+			difference=DateTime.Now-triedTimes
+			If difference<60000 Then
+				Page.ShowToast("loginok", "", "密码错误次数过多，请"&(60-difference/1000)&"秒以后再试", 2000, False)
+				Return
+			Else
+				File.Delete(File.DirApp&"/logs",logininp1.Text&".log")
+				ABMShared.wrongRecord.Put(logininp1.Text,0)
+			End If
+		End If
 		
 		
 		' 		The Page.ws.Session.SetAttribute("") types (cookies) can be used for many different purposes.
@@ -79,7 +94,22 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 						Page.ws.Session.SetAttribute("UserType", "admin"  )
 						Page.ws.Session.SetAttribute("UserID", "my_name_or_number"  )
 				    Else
-						Page.ShowToast("loginok", "", "抱歉！"&CRLF&"密码错误", 2000, False)
+						
+						If ABMShared.wrongRecord.ContainsKey(logininp1.Text) Then
+							Dim wrongTimes As Int
+							wrongTimes=ABMShared.wrongRecord.Get(logininp1.Text)
+							wrongTimes=wrongTimes+1
+							ABMShared.wrongRecord.Put(logininp1.Text,wrongTimes)
+							If wrongTimes<5 Then
+								Page.ShowToast("loginok", "", "抱歉！"&CRLF&"密码错误", 2000, False)
+							Else
+								Page.ShowToast("loginok", "", "密码错误次数过多，请1分钟以后再试", 2000, False)
+								File.WriteString(File.DirApp&"/logs",logininp1.Text&".log",DateTime.Now)
+							End If
+						Else
+							ABMShared.wrongRecord.Put(logininp1.Text,1)
+							Page.ShowToast("loginok", "", "抱歉！"&CRLF&"密码错误", 2000, False)
+						End If
 						'Page.ShowModalSheet("wronginput")   ' this can be used to show wrong credentials for login...
 						Return
 				    End If

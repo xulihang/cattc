@@ -19,7 +19,7 @@ Sub Process_Globals
 	Public CachedPages As Map
 	Public CacheScavengePeriodSeconds As Int = 15*60 ' 15 minutes 
 	Public SessionMaxInactiveIntervalSeconds As Int = 30*60 ' 30 minutes '1*60*24 ' one hour ' -1 = immortal but beware! This also means your cache is NEVER emptied!
-	
+	Public wrongRecord As Map
 End Sub
 
 
