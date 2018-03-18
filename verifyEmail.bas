@@ -25,7 +25,7 @@ Sub Handle(req As ServletRequest, resp As ServletResponse)
 		Dim su As StringUtils
 		Dim data() As Byte
 		data=su.DecodeBase64(base64)
-		decoded=BytesToString(data,0,data.Length,"UTF-8")
+		decoded=BytesToString(data,0,data.Length,"UTF8")
 		Log(decoded)
 		Dim asu As ApacheSU
 		Dim list1 As List
@@ -38,8 +38,9 @@ Sub Handle(req As ServletRequest, resp As ServletResponse)
 		If File.Exists(File.DirApp,"verifyCodes.map") Then
 			Dim map1 As Map
 			map1=File.ReadMap(File.DirApp,"verifyCodes.map")
-			Log(map1.Get(email))
-			If base64=map1.Get(email) Then
+			'Log(map1.Get(email))
+			'Log(base64)
+			If su.EncodeUrl(base64,"UTF8")=map1.Get(email) Then
 
 				If req.ParameterMap.ContainsKey("type") And req.GetParameter("type")="new" Then
 					changeVerified(email)

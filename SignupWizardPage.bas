@@ -448,8 +448,8 @@ End Sub
 Sub getBase64(s As String) As String
 	Dim su As StringUtils
 	Dim bytes() As Byte
-	bytes=s.GetBytes("UTF-8")
-	Return su.EncodeBase64(bytes)
+	bytes=s.GetBytes("UTF8")
+	Return su.EncodeUrl(su.EncodeBase64(bytes),"UTF8")
 End Sub
 
 Sub randomNum As String
