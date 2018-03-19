@@ -38,7 +38,7 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 				difference=DateTime.Now-triedTimes
 				If difference>120000 Then
 					If ABMShared.wrongRecord.ContainsKey(logininp1.Text) Then
-						ABMShared.wrongRecord.Remove(logininp1) '已经是两分钟前的错误尝试了，就给清空了
+						ABMShared.wrongRecord.Remove(logininp1.Text) '已经是两分钟前的错误尝试了，就给清空了
 					End If
 					File.Delete(File.DirApp&"/logs",logininp1.Text&".log")
 				End If
