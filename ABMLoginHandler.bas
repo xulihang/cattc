@@ -19,7 +19,7 @@ public Sub BuildModalSheets(page As ABMPage)
 	page.AddModalSheetTemplate(BuildWrongInputModalSheet(page))
 End Sub
 
-public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
+public Sub HandleLogin(LoginFromPageID As String, Page As ABMPage)
 	Dim mymodal As ABMModalSheet = Page.ModalSheet("login")
 	If ABMShared.wrongRecord.IsInitialized=False Then
 		ABMShared.wrongRecord.Initialize
@@ -89,14 +89,14 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 			
 		' simple login with json as database
 		Else   
-			If File.Exists(File.DirApp,"users.json") Then
-				Dim json As JSONParser
-				Dim map1 As Map
-				json.Initialize(File.ReadString(File.DirApp,"users.json"))
-				map1=json.NextObject
-				If map1.ContainsKey(logininp1.Text) Then
+			If File.Exists(File.DirApp,"users.db") Then
+				If ABMShared.kvs.IsInitialized=False Then
+					ABMShared.kvs.Initialize(File.DirApp, "users.db")
+				End If
+				If ABMShared.kvs.ContainsKey(logininp1.Text)=True Then
 					Dim map2 As Map
-				    map2=map1.Get(logininp1.Text)
+					map2=ABMShared.kvs.Get((logininp1.Text))
+					Log(map2)
 					If logininp2.Text = map2.Get("password") Then
 						Page.Msgbox("loginok", "登录成功，两秒后跳转页面",  "欢迎"&logininp1.Text,"继续", False, ABM.MSGBOX_POS_TOP_CENTER,"redmsgbox")
 						Sleep(2000)
@@ -147,7 +147,8 @@ public Sub HandleLogin(LoginFromPage As String, Page As ABMPage)
 	'  user was successful in login.  Now navigate to About Page...
 	
 	Page.CloseModalSheet("login")
-	ABMShared.NavigateToPage(Page.ws, Page.GetPageID,  "../")
+	
+	ABMShared.NavigateToPage(Page.ws,page.GetPageID,  "../")
 
 End Sub
 

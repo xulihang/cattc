@@ -20,6 +20,7 @@ Sub Process_Globals
 	Public CacheScavengePeriodSeconds As Int = 15*60 ' 15 minutes 
 	Public SessionMaxInactiveIntervalSeconds As Int = 30*60 ' 30 minutes '1*60*24 ' one hour ' -1 = immortal but beware! This also means your cache is NEVER emptied!
 	Public wrongRecord As Map
+	Public kvs As KeyValueStore
 End Sub
 
 
@@ -277,7 +278,7 @@ Sub BuildNavigationBarextra(page As ABMPage, Title As String, logo As String, Ac
 	page.NavigationBar.ActiveSideSubReturnName = ActiveSideSubReturnName
 	
 	' you must add at least ONE dummy item if you want to add items to the topbar	in ConnectNaviagationBar
-	page.NavigationBar.AddTopItem("DUMMY", "{NBSP}", "", "", True) ' must be true to allow connect top items
+	page.NavigationBar.AddTopItem("HomeDummy", "主页", "", "../", True) ' must be true to allow connect top items
 	
 	' you must add at least ONE dummy item if you want to add items to the sidebar
 	'page.NavigationBar.AddSideBarItem("DUMMY", "{NBSP}", "", "")

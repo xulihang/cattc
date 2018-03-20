@@ -2,6 +2,8 @@
 Build1=Default,com.ab.template
 Group=Default Group
 Library1=jcore
+Library10=jrandomaccessfile
+Library11=jb4xencryption
 Library2=jserver
 Library3=abmaterial
 Library4=javaobject
@@ -11,10 +13,12 @@ Library7=jnet
 Library8=apachestringutilsb4j
 Library9=jstringutils
 Module1=ABMShared
-Module10=SignupWizardPage
+Module10=AnswerPage
 Module11=verifyEmail
-Module12=AnswerPage
-Module13=DBM
+Module12=handleOrder
+Module13=resetPasswordPage
+Module14=KeyValueStore
+Module15=DBM
 Module2=ABMCacheControl
 Module3=ABMErrorHandler
 Module4=ABMRootFilter
@@ -22,16 +26,18 @@ Module5=ABMApplication
 Module6=ABMLoginHandler
 Module7=HomePage
 Module8=ABMCacheScavenger
-Module9=resetPasswordPage
+Module9=SignupWizardPage
 NumberOfFiles=0
-NumberOfLibraries=9
-NumberOfModules=13
+NumberOfLibraries=11
+NumberOfModules=15
 Version=6.01
 @EndOfDesignText@
 'Non-UI application (console / server application)
 #Region  Project Attributes 
 	#CommandLineArgs:
 	#MergeLibraries: True 	
+	#AdditionalJar: sqlite-jdbc-3.7.2
+    #AdditionalJar: bcprov-jdk15on-154
 #End Region
 
 Sub Process_Globals
@@ -40,6 +46,12 @@ Sub Process_Globals
 End Sub
 
 Sub AppStart (Args() As String)
+	
+	'加载数据库
+	If ABMShared.kvs.IsInitialized=False Then
+		ABMShared.kvs.Initialize(File.DirApp, "users.db")
+	End If
+
 	' the user needs to login
 	ABMShared.NeedsAuthorization = False
 	
@@ -75,8 +87,9 @@ Sub AppStart (Args() As String)
 	myApp.AddPage(answer.page)
 	myApp.AddPage(reset.page)
 	srvr.AddHandler("/verify","verifyEmail",False)
+	srvr.AddHandler("/ordercomplete","handleOrder",False)
 	' start the server  - server name and port.
-	myApp.StartServer(srvr, "srvr", 51045)	
+	myApp.StartServer(srvr, "srvr", 80)	
 	
 	' When running on a remote server, uncomment this line below to record your log messages to a file!!!
 	' Helps you debug remotely...		
@@ -84,9 +97,6 @@ Sub AppStart (Args() As String)
 			
 	StartMessageLoop
 End Sub
-
-
-
 
 
 

@@ -46,6 +46,9 @@ Private Sub WebSocket_Connected (WebSocket1 As WebSocket)
 		Return
 	End If
 	
+	If ABMShared.kvs.IsInitialized=False Then
+		ABMShared.kvs.Initialize(File.DirApp, "users.db")
+	End If
 	
 	' Set needs auth to false.  These are public pages....
 	ABMShared.NeedsAuthorization = False
@@ -146,8 +149,6 @@ End Sub
 
 
 Sub ConnectPage()
-
-
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
 		page.ShowToast("loginedToast","","你已经登录了",2000,False)
@@ -381,28 +382,20 @@ Sub signupDone(email As String,xm As String,password As String)
 	Dim map1,map2 As Map
 	map1.Initialize
 	map2.Initialize
-	If File.Exists(File.DirApp,"users.json") Then
-		Dim jsonp As JSONParser
-		jsonp.Initialize(File.ReadString(File.DirApp,"users.json"))
-		map1=jsonp.NextObject
-	End If
 	map2.Put("xm",xm)
 	map2.Put("password",password)
 	map2.Put("verified","未验证")
 	map2.Put("paid","未付款")
 	map1.Put(email,map2)
-	Dim jsong As JSONGenerator
-	jsong.Initialize(map1)
-	File.WriteString(File.DirApp,"users.json",jsong.ToString)
+	ABMShared.kvs.Put(email,map2)
 End Sub
 
 Sub emailExists(email As String) As Boolean
-	If File.Exists(File.DirApp,"users.json") Then
-		Dim jsonp As JSONParser
-		jsonp.Initialize(File.ReadString(File.DirApp,"users.json"))
-		Dim map1 As Map
-		map1=jsonp.NextObject
-		If map1.ContainsKey(email) Then
+	If File.Exists(File.DirApp,"users.db") Then
+		If ABMShared.kvs.IsInitialized=False Then
+			ABMShared.kvs.Initialize(File.DirApp, "users.db")
+		End If
+		If ABMShared.kvs.ContainsKey(email) Then
 			Return True
 		Else
 			Return False
@@ -411,7 +404,6 @@ Sub emailExists(email As String) As Boolean
 		Return False
 	End If
 End Sub
-
 
 Sub sendEmail(target As String,subject As String,body As String)
 	Dim servUsername,servPassword As String

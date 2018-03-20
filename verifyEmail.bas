@@ -44,7 +44,15 @@ Sub Handle(req As ServletRequest, resp As ServletResponse)
 
 				If req.ParameterMap.ContainsKey("type") And req.GetParameter("type")="new" Then
 					changeVerified(email)
-					resp.Write("邮箱已验证！") '新注册验证
+					resp.Write("邮箱已验证！")
+					'wait for (changeVerified(email)) Complete (Success As Boolean)
+					'If Success=True Then
+					'	resp.Write("邮箱已验证！")
+					'	'新注册验证
+					'Else
+					'	resp.Write("处理失败！")
+					'End If
+
 				Else
 				    File.WriteString(File.DirApp,"EmailToBeReset",email) '重制密码验证
 					resp.SendRedirect("fanyi/resetPasswordPage")
@@ -66,15 +74,11 @@ Sub Handle(req As ServletRequest, resp As ServletResponse)
 End Sub
 
 Sub changeVerified(email As String)
-	Dim jsonp As JSONParser
-	Dim jsong As JSONGenerator
-	If File.Exists(File.DirApp,"users.json") Then
-		jsonp.Initialize(File.ReadString(File.DirApp,"users.json"))
-		Dim map1,map2 As Map
-		map1=jsonp.NextObject
-		map2=map1.Get(email)
-		map2.Put("verified","已验证")
-		jsong.Initialize(map1)
-		File.WriteString(File.DirApp,"users.json",jsong.ToString)
+    If ABMShared.kvs.IsInitialized=False Then
+		ABMShared.kvs.Initialize(File.DirApp,"users.db")
 	End If
+	Dim map2 As Map
+	map2=ABMShared.kvs.Get(email)
+	map2.Put("verified","已验证")
+	ABMShared.kvs.Put(email,map2)
 End Sub

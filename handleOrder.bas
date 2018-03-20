@@ -49,16 +49,12 @@ Sub getIfSucceed(filename As String)
 	End If
 End Sub
 
-Sub changePaid(emailaccount As String)
-	Dim jsonp As JSONParser
-	Dim jsong As JSONGenerator
-	If File.Exists(File.DirApp,"users.json") Then
-		jsonp.Initialize(File.ReadString(File.DirApp,"users.json"))
-		Dim map1,map2 As Map
-		map1=jsonp.NextObject
-		map2=map1.Get(emailaccount)
-		map2.Put("paid","已付款")
-		jsong.Initialize(map1)
-		File.WriteString(File.DirApp,"users.json",jsong.ToString)
+Sub changePaid(email As String)
+	If ABMShared.kvs.IsInitialized=False Then
+		ABMShared.kvs.Initialize(File.DirApp,"users.db")
 	End If
+	Dim map2 As Map
+	map2=ABMShared.kvs.Get(email)
+	map2.Put("paid","已付款")
+	ABMShared.kvs.Put(email,map2)
 End Sub

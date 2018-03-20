@@ -226,15 +226,11 @@ Sub btn1_Clicked(Target As String)
 End Sub
 
 Sub changePwd(emailaccount As String,pwd As String)
-	Dim jsonp As JSONParser
-	Dim jsong As JSONGenerator
-	If File.Exists(File.DirApp,"users.json") Then
-		jsonp.Initialize(File.ReadString(File.DirApp,"users.json"))
-		Dim map1,map2 As Map
-		map1=jsonp.NextObject
-		map2=map1.Get(emailaccount)
-		map2.Put("password",pwd)
-		jsong.Initialize(map1)
-		File.WriteString(File.DirApp,"users.json",jsong.ToString)
+	If ABMShared.kvs.IsInitialized=False Then
+		ABMShared.kvs.Initialize(File.DirApp,"users.db")
 	End If
+	Dim map2 As Map
+	map2=ABMShared.kvs.Get(email)
+	map2.Put("password",pwd)
+	ABMShared.kvs.Put(email,map2)
 End Sub

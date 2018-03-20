@@ -44,6 +44,9 @@ Private Sub WebSocket_Connected (WebSocket1 As WebSocket)
 		Return
 	End If
 	
+	If ABMShared.kvs.IsInitialized=False Then
+		ABMShared.kvs.Initialize(File.DirApp, "users.db")
+	End If
 	
 	' Set needs auth to false.  These are public pages....
 	ABMShared.NeedsAuthorization = False
@@ -150,17 +153,31 @@ End Sub
 Sub ConnectPage()
 
 
+	
 	Dim card1 As ABMCard
 	card1.InitializeAsCard(page,"card1","邀请函","第七届全国计算机辅助翻译大赛",ABM.CARD_NOTSPECIFIED,"cardRedTheme")
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
+		'获取用户信息
+		If ABMShared.kvs.IsInitialized=False Then
+			ABMShared.kvs.Initialize(File.DirApp, "users.db")
+		End If
+		Dim email,xm,verified,paid As String
+		email=ws.Session.GetAttribute("authName")
+		Dim list1 As List
+		list1=getInfo(email)
+		xm=list1.Get(0)
+		verified=list1.Get(1)
+		paid=list1.Get(2)
+
+		
 		ABMShared.ConnectNavigationBarLogined(page)
-		page.Cell(2,1).AddComponent(BuildInfoContainer)
+		page.Cell(2,1).AddComponent(BuildInfoContainer(xm,verified,paid))
 		card1.AddAction("查看答题情况")
 	Else
 		Dim bmlbl As ABMLabel
 		bmlbl.Initialize(page,"bmlbl","报名费（registry fee）：30 RMB",ABM.SIZE_SPAN,False,"lightredzdepth")
-		page.Cell(2,1).AddComponent(bmlbl)
+		page.Cell(2,1).AddComponent(BuildPurchaseContainer)
 		ABMShared.ConnectNavigationBar2(page,  "Home", "Home", "Home",  Not(ws.Session.GetAttribute2("IsAuthorized", "") = ""))		
 		card1.AddAction("报名")
 	End If
@@ -206,6 +223,7 @@ End Sub
 public Sub BuildPage()
 	' initialize the theme
 	BuildTheme
+
 	page.InitializeWithTheme(Name, "/ws/" & ABMShared.AppName & "/" & Name, False, ABMShared.SessionMaxInactiveIntervalSeconds, theme)
 	
 	' show the spinning cicles while page is loading....
@@ -245,7 +263,8 @@ End Sub
 
 ' handle the login and cancel buttons from the login in form.
 Sub loginbtn_Clicked(Target As String)
-	ABMLoginHandler.HandleLogin("Home", page)
+	Log("loginbtn_Clicked")
+	ABMLoginHandler.HandleLogin(ABMPageId, page)
 End Sub
 
 Sub logincancelbtn_Clicked(Target As String)
@@ -304,6 +323,12 @@ Sub Page_NavigationbarClicked(Action As String, Value As String)
 		Return
 	End If
 	
+	If Action = "HomeDummy" Then
+		ConnectPage
+		'ABMShared.NavigateToPage(ws, ABMPageId, Value)
+		Return
+	End If
+	
 	If Action <> "Home" Then
 		NotWorking(Action)  ' shortcut to show - Page Not Available!
 	  ' ABMShared.NavigateToPage(ws, ABMPageId, Value)  ' typically, this is not commented out and will direct the flow to the menu option (page) chosen...
@@ -316,8 +341,32 @@ Sub NotWorking(act As String)
 
 End Sub
 
+Sub BuildPurchaseContainer As ABMContainer
+	Dim purchaseCont As ABMContainer
+	purchaseCont.Initialize(page, "purchase", "infoContTheme")
+	purchaseCont.AddRows(5,True,"").AddCells12(1,"")
+	purchaseCont.BuildGrid ' IMPORTANT!
+	Dim infolbl As ABMLabel
+	infolbl.Initialize(page, "infolbl", "购买学翻译软件：",ABM.SIZE_H4,False,"leftLblTheme")
+	purchaseCont.Cell(1,1).AddComponent(infolbl)
+	'Dim emaillbl As ABMLabel
+	'emaillbl.Initialize(page, "emaillbl", "邮箱：",ABM.SIZE_SPAN,False,"leftLblTheme")
+	'infocont.Cell(2,1).AddComponent(emaillbl)
+	Dim infopara As ABMLabel
+	infopara.Initialize(page,"infopara","通过学翻译软件，您可以掌握进行翻译需要做的准备，并获得参赛资格",ABM.SIZE_PARAGRAPH,False,"leftLblTheme")
+	
+	Dim buyBtn As ABMButton
+    buyBtn.InitializeFlat(page,"buybtn","","","购买","")
+	Dim image As ABMImage
+	image.Initialize(page,"iamge","../images/xfy.jpg",1.0)
 
-Sub BuildInfoContainer As ABMContainer
+	purchaseCont.Cell(2,1).AddComponent(infopara)
+	purchaseCont.Cell(3,1).AddComponent(image)
+	purchaseCont.Cell(4,1).AddComponent(buyBtn)
+	Return purchaseCont
+End Sub
+
+Sub BuildInfoContainer(xm As String, verified As String, paid As String) As ABMContainer
 	Dim infocont As ABMContainer
 	infocont.Initialize(page, "info", "infoContTheme")
 	infocont.AddRows(5,True,"").AddCells12(1,"")
@@ -335,16 +384,16 @@ Sub BuildInfoContainer As ABMContainer
 	Dim nameinp As ABMInput
 	nameinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,"姓名", False, "input：")
 	nameinp.Enabled=False
-	nameinp.Text=getName(emailinp.Text)
+	nameinp.Text=xm
 
 	Dim emailverifiedinp As ABMInput
 	emailverifiedinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,"邮箱验证状态", False,"input：")
 	emailverifiedinp.Enabled=False
-	emailverifiedinp.Text=getVerified(emailinp.Text)
+	emailverifiedinp.Text=verified
 	Dim paidinp As ABMInput
 	paidinp.Initialize(page, "paidinp",ABM.INPUT_TEXT,"付费情况", False, "input：")
 	paidinp.Enabled=False
-	paidinp.Text=getPaid(emailinp.Text)
+	paidinp.Text=paid
 
 
 	infocont.Cell(2,1).AddComponent(emailinp)
@@ -355,52 +404,27 @@ Sub BuildInfoContainer As ABMContainer
 End Sub
 
 
-Sub getName(email As String) As String
-	Dim json As JSONParser
-	json.Initialize(File.ReadString(File.DirApp,"users.json"))
-	Dim map1,map2 As Map
-	map1.Initialize
-	map2.Initialize
-	map1=json.NextObject
-	map2=map1.Get(email)
-	Return map2.Get("xm")
-End Sub
 
-Sub getVerified(email As String) As String
-	Dim json As JSONParser
-	json.Initialize(File.ReadString(File.DirApp,"users.json"))
-	Dim map1,map2 As Map
-	map1.Initialize
-	map2.Initialize
-	map1=json.NextObject
-	map2=map1.Get(email)
-	Return map2.Get("verified")
+Sub getInfo(email As String) As List
+	Dim map2 As Map
+	map2=ABMShared.kvs.Get(email)
+	Dim list1 As List
+	list1.Initialize
+	list1.Add(map2.Get("xm"))
+	list1.Add(map2.Get("verified"))
+	list1.Add(map2.Get("paid"))
+	Return list1
 End Sub
 
 Sub checkEmail(email As String) As Boolean
-	Dim json As JSONParser
-	json.Initialize(File.ReadString(File.DirApp,"users.json"))
-	Dim map1,map2 As Map
-	map1.Initialize
-	map2.Initialize
-	map1=json.NextObject
-    If map1.ContainsKey(email) Then
+    If ABMShared.kvs.ContainsKey(email) Then
 		Return True
 	Else
 		Return False
     End If
 End Sub
 
-Sub getPaid(email As String) As String
-	Dim json As JSONParser
-	json.Initialize(File.ReadString(File.DirApp,"users.json"))
-	Dim map1,map2 As Map
-	map1.Initialize
-	map2.Initialize
-	map1=json.NextObject
-	map2=map1.Get(email)
-	Return map2.Get("paid")
-End Sub
+
 
 Sub sendEmail(target As String,subject As String,body As String)
 	Dim servUsername,servPassword As String
