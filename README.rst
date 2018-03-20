@@ -1,7 +1,7 @@
 第七届计算机辅助翻译和技术传播大赛选手系统
 =======================================
 
-本服务器程序基于 `B4J <https://www.b4x.com/>`_ 和`ABMaterial <https://alwaysbusycorner.com/abmaterial/>`_开发，感谢原作者Erel和AlwaysBusy的作品，让我可以在HTML/CSS/Javascript基础尚薄弱的现阶段也能开发出还算像样的程序。
+本服务器程序基于 `B4J <https://www.b4x.com/>`_ 和 `ABMaterial <https://alwaysbusycorner.com/abmaterial/>`_ 开发，感谢原作者Erel和AlwaysBusy的作品，让我可以在HTML/CSS/Javascript基础尚薄弱的现阶段也能开发出还算像样的程序。
 
 下面是一些技术细节：
 
