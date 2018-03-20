@@ -1,7 +1,7 @@
 第七届计算机辅助翻译和技术传播大赛选手系统
 =======================================
 
-本服务器程序基于 `B4J <https://www.b4x.com/>`_ 和 `ABMaterial <https://alwaysbusycorner.com/abmaterial/>`_ 开发，感谢原作者Erel和AlwaysBusy的作品，让我可以在HTML/CSS/Javascript基础尚薄弱的现阶段也能开发出还算像样的程序。
+本服务器程序基于 `B4J <https://www.b4x.com/>`_ 和 `ABMaterial <https://alwaysbusycorner.com/abmaterial/>`_ 开发，感谢原作者Erel和AlwaysBusy，让我可以在HTML/CSS/Javascript基础尚薄弱的现阶段也能开发出还算像样的程序。
 
 下面是一些技术细节：
 
@@ -10,7 +10,7 @@
 
 1. 用户数据库在刚开始测试时保存在json文件里，考虑到数据的安全性和并行读取等问题，改使用keyValueStore，将数据基于键值存储在sqlite数据库文件里。sqlite开启wal以支持多线程，并且避免数据损坏。
 
-#. 用户使用邮箱注册，利用SMTP服务进行验证及密码重制服务。建立新用户或者重制密码时会检测数据库里的记录。
+#. 用户使用邮箱注册，利用SMTP服务进行验证及密码重置服务。建立新用户或者重置密码时会检测数据库里的记录。验证码为随机生成的10位数字结合用户名使用base64编码而成。因为放在http get的参数里，需要在对base64进行编码以适应url。
 
 #. 用户密码尝试失败次数5次以上时，在1分钟内不能再进行登录尝试。目前没有启用验证码。
 
