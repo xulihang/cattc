@@ -46,7 +46,7 @@ public Sub HandleLogin(LoginFromPageID As String, Page As ABMPage)
 				triedTimes=logstring
 				difference=DateTime.Now-triedTimes
 				If difference<60000 Then
-					Page.ShowToast("loginok", "", "密码错误次数过多，请"&(60-difference/1000)&"秒以后再试", 2000, False)
+					Page.ShowToast("loginok", "", Page.XTR("0001","密码错误次数过多，请")&(60-difference/1000)&Page.XTR("0002","秒以后再试"), 2000, False)
 					Return
 				Else
 					File.Delete(File.DirApp&"/logs",logininp1.Text&".log")
@@ -98,7 +98,7 @@ public Sub HandleLogin(LoginFromPageID As String, Page As ABMPage)
 					map2=ABMShared.kvs.Get((logininp1.Text))
 					Log(map2)
 					If logininp2.Text = map2.Get("password") Then
-						Page.Msgbox("loginok", "登录成功，两秒后跳转页面",  "欢迎"&logininp1.Text,"继续", False, ABM.MSGBOX_POS_TOP_CENTER,"redmsgbox")
+						Page.Msgbox("loginok", Page.XTR("0003","登录成功，两秒后跳转页面"),  Page.XTR("0004","欢迎")&logininp1.Text,Page.XTR("0005","继续"), False, ABM.MSGBOX_POS_TOP_CENTER,"redmsgbox")
 						Sleep(2000)
 						'Page.ShowToast("tid1","toastgreen"," Login Successful!",5000,False)
 						Page.ws.Session.SetAttribute("authType", "local")
@@ -116,27 +116,27 @@ public Sub HandleLogin(LoginFromPageID As String, Page As ABMPage)
 							ABMShared.wrongRecord.Put(logininp1.Text,wrongTimes)
 							If wrongTimes<5 Then
 								File.WriteString(File.DirApp&"/logs",logininp1.Text&".log","lastTry:"&DateTime.Now)
-								Page.ShowToast("loginok", "", "抱歉！"&CRLF&"密码错误", 2000, False)
+								Page.ShowToast("loginok", "", Page.XTR("0006","抱歉！")&CRLF&Page.XTR("0007","密码错误"), 2000, False)
 							Else
-								Page.ShowToast("loginok", "", "密码错误次数过多，请1分钟以后再试", 2000, False)
+								Page.ShowToast("loginok", "", Page.XTR("0008","密码错误次数过多，请1分钟以后再试"), 2000, False)
 								File.WriteString(File.DirApp&"/logs",logininp1.Text&".log",DateTime.Now)
 							End If
 						Else
 							ABMShared.wrongRecord.Put(logininp1.Text,1)
 							File.WriteString(File.DirApp&"/logs",logininp1.Text&".log","lastTry:"&DateTime.Now)
-							Page.ShowToast("loginok", "", "抱歉！"&CRLF&"密码错误", 2000, False)
+							Page.ShowToast("loginok", "", Page.XTR("0006","抱歉！")&CRLF&Page.XTR("0007","密码错误"), 2000, False)
 						End If
 						'Page.ShowModalSheet("wronginput")   ' this can be used to show wrong credentials for login...
 						Return
 				    End If
 				Else
-					Page.ShowToast("loginwrong", "", "抱歉！"&CRLF&"该邮箱不存在", 2000, False)
+					Page.ShowToast("loginwrong", "", Page.XTR("0006","抱歉！")&CRLF& Page.XTR("0017","该邮箱不存在"), 2000, False)
 					'Page.Msgbox("loginok", " Can Not Login! ",  "抱歉！"&CRLF&"该邮箱不存在", "请重试", False, ABM.MSGBOX_POS_CENTER_CENTER,"")
 					'Page.ShowModalSheet("wronginput")   ' this can be used to show wrong credentials for login...
 					Return
 				End If
 			Else
-				Page.ShowToast("loginwrong", "", "抱歉！"&CRLF&"用户名或密码错误", 2000, False)
+				Page.ShowToast("loginwrong", "",  Page.XTR("0006","抱歉！")&CRLF& Page.XTR("0009","用户名或密码错误"), 2000, False)
 			    Return
 		    End If
 		End If	
@@ -148,7 +148,7 @@ public Sub HandleLogin(LoginFromPageID As String, Page As ABMPage)
 	
 	Page.CloseModalSheet("login")
 	
-	ABMShared.NavigateToPage(Page.ws,page.GetPageID,  "../")
+	ABMShared.NavigateToPage(Page.ws,Page.GetPageID,  "../")
 
 End Sub
 
@@ -185,15 +185,15 @@ Sub BuildLoginSheet(AppPage As ABMPage) As ABMModalSheet
 	myModal.Content.BuildGrid 'IMPORTANT once you loaded the complete grid AND before you start adding components
 	
 	' add paragraph	
-	myModal.Content.Cell(1,1).AddComponent(ABMShared.BuildParagraphBQWithoutZDepth( AppPage,"par1","请输入邮箱号和密码：") )
+	myModal.Content.Cell(1,1).AddComponent(ABMShared.BuildParagraphBQWithoutZDepth( AppPage,"par1",AppPage.XTR("0016","请输入邮箱号和密码：")) )
 
 	' create the input fields for the content
 	Dim inp1 As ABMInput
-	inp1.Initialize(AppPage, "logininp1", ABM.INPUT_TEXT, "邮箱",  False, "redInput")
+	inp1.Initialize(AppPage, "logininp1", ABM.INPUT_TEXT, AppPage.XTR("0010","邮箱"),  False, "redInput")
 	myModal.Content.Cell(3,1).AddComponent(inp1)
 	
 	Dim inp2 As ABMInput
-	inp2.Initialize(AppPage, "logininp2", ABM.INPUT_PASSWORD, "密码", False, "redInput")
+	inp2.Initialize(AppPage, "logininp2", ABM.INPUT_PASSWORD, AppPage.XTR("0011","密码"), False, "redInput")
 	myModal.Content.Cell(3,1).AddComponent(inp2)
 	
 	myModal.Footer.AddRowsM( 2,True,0,0, "").AddCells12(1,"")
@@ -201,15 +201,15 @@ Sub BuildLoginSheet(AppPage As ABMPage) As ABMModalSheet
 	
 	' create the button for the footer
 	Dim msbtn1 As ABMButton
-	msbtn1.InitializeFlat(AppPage, "loginbtn", "", "", "登录", "transparentbtn")
+	msbtn1.InitializeFlat(AppPage, "loginbtn", "", "", AppPage.XTR("0012","登录"), "transparentbtn")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn1)	
 
 	Dim msbtn2 As ABMButton
-	msbtn2.InitializeFlat(AppPage, "logincancelbtn", "", "", "取消", "transparentbtn")
+	msbtn2.InitializeFlat(AppPage, "logincancelbtn", "", "", AppPage.XTR("0013","取消"), "transparentbtn")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn2)	
 	
 	Dim msbtn3 As ABMButton
-	msbtn3.InitializeFlat(AppPage, "forgetpassbtn", "", "", "忘记密码", "transparentbtn")
+	msbtn3.InitializeFlat(AppPage, "forgetpassbtn", "", "", AppPage.XTR("0014","忘记密码"), "transparentbtn")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn3)
 
 	Return myModal
@@ -226,7 +226,7 @@ Sub BuildWrongInputModalSheet(page As ABMPage) As ABMModalSheet
 	myModalError.Content.BuildGrid 'IMPORTANT once you loaded the complete grid AND before you start adding components
 	
 	Dim lbl1 As ABMLabel
-	lbl1.Initialize(page, "contlbl1", "邮箱号或密码错",ABM.SIZE_PARAGRAPH, False, "")
+	lbl1.Initialize(page, "contlbl1", page.XTR("0015","邮箱号或密码错"),ABM.SIZE_PARAGRAPH, False, "")
 	myModalError.Content.Cell(1,1).AddComponent(lbl1)
 	
 	Return myModalError

@@ -14,7 +14,7 @@ Sub Process_Globals
 	
 	Public AppVersion As String = DateTime.now ' NEW 2.01 this helps to get the latest js/css files when the app is started/restarted
 	Public AppPublishedStartURL As String = ""
-	Public AppName As String = ""
+	Public AppName As String = "fanyi"
 	
 	Public CachedPages As Map
 	Public CacheScavengePeriodSeconds As Int = 15*60 ' 15 minutes 
@@ -320,12 +320,20 @@ Sub BuildFooter(page As ABMPage)
 	page.Footer.UseTheme("footertheme")
 End Sub
 
+Sub enableMultilanguage(ws As WebSocket, page As ABMPage)
+	page.SetAcceptedLanguages(Array As String("en", "zh"), "zh")
+	ABM.LoadTranslations(File.DirApp & "/www/" & AppName & "/translations/")
+	Log(File.DirApp & "/www/" & AppName & "/translations/")
+	Dim ActiveFoundLanguage As String = page.DetectLanguage(ws.UpgradeRequest.GetHeader("Accept-Language"))
+	page.SetActiveLanguage("en", "" )
+End Sub
+
 Sub ConnectFooter(page As ABMPage)
 	Dim ScreenWidth As Int
 	Dim wh As String = ABM.GetBrowserWidthHeight(page)
 	Log(wh)
 	Dim lbl1 As ABMLabel
-	lbl1.Initialize(page, "footlbl1", "TAPKU Copyright @2017 技术支持请前往官方QQ群",ABM.SIZE_PARAGRAPH, False, "lbltheme3")
+	lbl1.Initialize(page, "footlbl1", page.XTR("0005","TAPKU Copyright @2017 技术支持请前往官方QQ群"),ABM.SIZE_PARAGRAPH, False, "lbltheme3")
 	Dim whspl() As String = Regex.Split(";", wh)
 	If whspl(0) < whspl(1) Then
 		ScreenWidth = whspl(0)
@@ -357,9 +365,9 @@ Sub ConnectNavigationBarLogined(page As ABMPage) 'ignore
 	'page.NavigationBar.AddSideBarItem("LogOff", "登出", "mdi-action-exit-to-app",   "")
 	
 	' add the LOGOUT item on the title bar....
-	page.NavigationBar.AddTopItem("Home", "主页", "",  "../HomePage",True)
-	page.NavigationBar.AddTopItem("LogOff", "登出", "mdi-action-exit-to-app",   "",True)
-	
+	page.NavigationBar.AddTopItem("Home", page.XTR("0001","主页"), "",  "../HomePage",True)
+	page.NavigationBar.AddTopItem("LogOff", page.XTR("0002","登出"), "mdi-action-exit-to-app",   "",True)
+	page.NavigationBar.Title=page.XTR("0004","大赛报名")
 	page.NavigationBar.Refresh ' IMPORTANT
 End Sub
 
@@ -373,23 +381,23 @@ Sub ConnectNavigationBar(page As ABMPage) 'ignore
 	'page.NavigationBar.AddSideBarItem("Home", "主页", "",  "../HomePage")
 	
 	' add the LOGOUT item on the title bar....
-	page.NavigationBar.AddTopItem("Home", "主页", "",  "../HomePage",True)
-	
+	page.NavigationBar.AddTopItem("Home", page.XTR("0001","主页"), "",  "../HomePage",True)
+	page.NavigationBar.Title=page.XTR("0004","大赛报名")
 	page.NavigationBar.Refresh ' IMPORTANT
 End Sub
 
 Sub ConnectNavigationBar2(page As ABMPage, ActiveTopReturnName As String, ActiveSideReturnName As String, ActiveSideSubReturnName As String, IsMember As Boolean)
 	' Clear the dummies we created in BuildNavigationBar
 	page.NavigationBar.Clear
-	
+
 	' new behaviour: on each top item you can set if it should hide of not on a medium or small device.
-	page.NavigationBar.AddTopItem("Home",       "主页", "",       "../HomePage", True)
-	page.NavigationBar.AddTopItem("Login",  "登录", "mdi-action-account-circle", "",  True) 'visibility设置为true会自动隐藏
+	page.NavigationBar.AddTopItem("Home",       page.XTR("0001","主页"), "",       "../HomePage", True)
+	page.NavigationBar.AddTopItem("Login",  page.XTR("0003","登录"), "mdi-action-account-circle", "",  True) 'visibility设置为true会自动隐藏
 	
 	page.NavigationBar.ActiveTopReturnName = ActiveTopReturnName
 	page.NavigationBar.ActiveSideReturnName = ActiveSideReturnName
 	page.NavigationBar.ActiveSideSubReturnName = ActiveSideSubReturnName
-	
+	page.NavigationBar.Title=page.XTR("0004","大赛报名")
 	page.NavigationBar.Refresh ' IMPORTANT
 End Sub
 

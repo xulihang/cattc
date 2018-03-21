@@ -145,7 +145,7 @@ End Sub
 
 Sub ConnectPage()
 
-	
+	ABMShared.enableMultilanguage(ws,page)
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
 		ABMShared.ConnectNavigationBarLogined(page)
@@ -155,9 +155,9 @@ Sub ConnectPage()
 
 	Dim tabs As ABMTabs
 	tabs.Initialize(page, "tabs", "redTabs")
-	tabs.AddTab("tab1","汉译英",BuildTabContainer("tab1","汉译英"),3,3,3,3,3,3,True,True,"","")
-	tabs.AddTab("tab2","英译汉",BuildTabContainer("tab2","英译汉"),3,3,3,3,3,3,True,True,"","")
-	tabs.AddTab("tab3","技术传播",BuildTabContainer("tab3","技术传播"),3,3,3,3,3,3,True,True,"","")
+	tabs.AddTab("tab1",page.XTR("0001","汉译英"),BuildTabContainer("tab1","汉译英"),3,3,3,3,3,3,True,True,"","")
+	tabs.AddTab("tab2",page.XTR("0002","英译汉"),BuildTabContainer("tab2","英译汉"),3,3,3,3,3,3,True,True,"","")
+	tabs.AddTab("tab3",page.XTR("0003","技术传播"),BuildTabContainer("tab3","技术传播"),3,3,3,3,3,3,True,True,"","")
 	
 	page.Cell(1,1).AddComponent(tabs)
 	ABMShared.ConnectFooter(page)
@@ -178,7 +178,7 @@ public Sub BuildPage()
 	' show the spinning cicles while page is loading....
 	page.ShowLoader=True
 	page.PageHTMLName = "index.html"
-	page.PageTitle = "翻译大赛"  ' You can also set this as a property in "ABMShared.BuildNavigationBar" below...
+	page.PageTitle = "翻译大赛 CATTCC"  ' You can also set this as a property in "ABMShared.BuildNavigationBar" below...
 	
 	'  Google SEO stuff...
 	page.PageDescription = ""

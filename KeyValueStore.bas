@@ -14,7 +14,12 @@ End Sub
 Public Sub Initialize (Dir As String, FileName As String)
 	If sql1.IsInitialized Then sql1.Close
 #if B4J
-	sql1.InitializeSQLite(Dir, FileName, True)
+    If File.Exists(Dir,FileName) Then
+		sql1.InitializeSQLite(Dir, FileName, True)
+	Else
+		sql1.InitializeSQLite(Dir, FileName, True)
+		sql1.ExecNonQuery("PRAGMA journal_mode = wal")
+    End If
 #else
 	sql1.Initialize(Dir, FileName, True)
 #end if

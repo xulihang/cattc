@@ -1,0 +1,64 @@
+abmshared_0005;TAPKU Copyright @2017 Support:xulihang
+abmshared_0001;Home
+abmshared_0002;Logout
+abmshared_0004;Enroll
+abmshared_0003;Login
+abmloginhandler_0001;Too many failures, please retry after 
+abmloginhandler_0002; seconds
+abmloginhandler_0003;Login successfully, will redirect in 2 seconds
+abmloginhandler_0004;Welcome 
+abmloginhandler_0005;Continue
+abmloginhandler_0006;Sorry!
+abmloginhandler_0007;Wrong password
+abmloginhandler_0008;Too many failures, please retry after 1 minute.
+abmloginhandler_0009;Wrong email or password
+abmloginhandler_0010;Email
+abmloginhandler_0011;Password
+abmloginhandler_0012;Login
+abmloginhandler_0013;Cancel
+abmloginhandler_0014;Forget Password
+abmloginhandler_0015;Wrong email or password
+abmloginhandler_0016;Please input you email and password:
+abmloginhandler_0017;Email does not exist
+answerpage_0001;C2E
+answerpage_0002;E2C
+answerpage_0003;TC
+homepage_0001;Invitation
+homepage_0002;The seventh Computer-aided Translation and Technical Communication Competition
+homepage_0003;Answers
+homepage_0004;Enroll
+homepage_0005;Send reset email to the address you have inputed?
+homepage_0006;Forget password
+homepage_0007;Yes
+homepage_0008;Cancel
+homepage_0009;Email does not exist
+homepage_0010;Reset password
+homepage_0011;Click to reset password
+homepage_0012;Purchase XFY:
+homepage_0013;XFY is an app made to facilitate translation learning. By purchasing XFY, you can learn about how to do translations and you can get the permit to join the CATTC competition.
+homepage_0014;Buy
+homepage_0015;User info:
+homepage_0016;Email
+homepage_0017;Name
+homepage_0018;Email verified
+homepage_0019;Paid
+homepage_0020;Sent
+signupwizardpage_0001;You have alreadly logined.
+signupwizardpage_0002;previous
+signupwizardpage_0003;next
+signupwizardpage_0004;done
+signupwizardpage_0005;step1
+signupwizardpage_0006;Email
+signupwizardpage_0007;step2
+signupwizardpage_0008;Name
+signupwizardpage_0009;step3
+signupwizardpage_0010;Password
+signupwizardpage_0011;Email:
+signupwizardpage_0012;Name:
+signupwizardpage_0013;Password:
+signupwizardpage_0014;The email has been registered
+signupwizardpage_0015;sending, please wait.
+signupwizardpage_0016;failed, the email has been registered
+signupwizardpage_0017;failed
+signupwizardpage_0018;success, an email has been sent to you
+signupwizardpage_0019;success, but we failed to send to the verification email.

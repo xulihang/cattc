@@ -151,11 +151,9 @@ End Sub
 
 
 Sub ConnectPage()
-
-
-	
+	ABMShared.enableMultilanguage(ws,page)	
 	Dim card1 As ABMCard
-	card1.InitializeAsCard(page,"card1","邀请函","第七届全国计算机辅助翻译大赛",ABM.CARD_NOTSPECIFIED,"cardRedTheme")
+	card1.InitializeAsCard(page,"card1",page.XTR("0001","邀请函"),page.XTR("0002","第七届全国计算机辅助翻译大赛"),ABM.CARD_NOTSPECIFIED,"cardRedTheme")
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
 		'获取用户信息
@@ -173,20 +171,20 @@ Sub ConnectPage()
 		
 		ABMShared.ConnectNavigationBarLogined(page)
 		page.Cell(2,1).AddComponent(BuildInfoContainer(xm,verified,paid))
-		card1.AddAction("查看答题情况")
+		card1.AddAction(page.XTR("0003","查看答题情况"))
 	Else
 		Dim bmlbl As ABMLabel
 		bmlbl.Initialize(page,"bmlbl","报名费（registry fee）：30 RMB",ABM.SIZE_SPAN,False,"lightredzdepth")
 		page.Cell(2,1).AddComponent(BuildPurchaseContainer)
 		ABMShared.ConnectNavigationBar2(page,  "Home", "Home", "Home",  Not(ws.Session.GetAttribute2("IsAuthorized", "") = ""))		
-		card1.AddAction("报名")
+		card1.AddAction(page.XTR("0004","报名"))
 	End If
 
 	
 
 	page.Cell(1,1).AddComponent(card1)
 	ABMShared.ConnectFooter(page)
-
+    
 
 	
 	page.Refresh ' IMPORTANT
@@ -203,7 +201,7 @@ End Sub
 
 Sub card1_LinkClicked(Card As String, Action As String)
 	Log("Target: "&Card&"  Action: "&Action)
-	If Action="报名" Then
+	If Action=page.XTR("0004","报名") Then
 		ABMShared.NavigateToPage(ws, ABM.GetPageID(page, "SignupWizardPage",ws), "../SignupWizardPage")
 	Else
 		ABMShared.NavigateToPage(ws, ABM.GetPageID(page, "AnswerPage",ws), "../AnswerPage")
@@ -225,11 +223,11 @@ public Sub BuildPage()
 	BuildTheme
 
 	page.InitializeWithTheme(Name, "/ws/" & ABMShared.AppName & "/" & Name, False, ABMShared.SessionMaxInactiveIntervalSeconds, theme)
-	
+
 	' show the spinning cicles while page is loading....
 	page.ShowLoader=True
 	page.PageHTMLName = "index.html"
-	page.PageTitle = "翻译大赛"  ' You can also set this as a property in "ABMShared.BuildNavigationBar" below...
+	page.PageTitle = "翻译大赛 CATTCC"  ' You can also set this as a property in "ABMShared.BuildNavigationBar" below...
 	
 	'  Google SEO stuff...
 	page.PageDescription = ""
@@ -274,7 +272,7 @@ End Sub
 Sub forgetpassbtn_Clicked(Target As String)
 	Log(Target)
 	'page.InputBox("inputbox","忘记密码","确认","取消",False,ABM.INPUTBOX_TYPE_QUESTION,ABM.INPUTBOX_QUESTIONTYPE_EMAIL,"","","邮箱不对","",False,ABM.MSGBOX_POS_CENTER_CENTER,"")
-	page.Msgbox2("forgetmsgbox","确认给已经填写的邮箱地址发送重制密码邮件吗？","忘记密码","确认","取消",False,ABM.MSGBOX_TYPE_QUESTION,False,ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
+	page.Msgbox2("forgetmsgbox",page.XTR("0005","确认给已经填写的邮箱地址发送重制密码邮件吗？"),page.XTR("0006","忘记密码"),page.XTR("0007","确认"),page.XTR("0008","取消"),False,ABM.MSGBOX_TYPE_QUESTION,False,ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
 End Sub
 
 Sub page_MsgBoxResult(returnName As String,result As String)
@@ -286,7 +284,7 @@ Sub page_MsgBoxResult(returnName As String,result As String)
 		Dim mymodal As ABMModalSheet = page.ModalSheet("login")
 		Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
 		If checkEmail(logininp1.Text)=False Then
-			page.ShowToast("","","邮箱不存在",2000,False)
+			page.ShowToast("","",page.XTR("0009","邮箱不存在"),2000,False)
 			Return
 		End If
 		Dim code,base64 As String '随机生成的数字代码
@@ -302,7 +300,7 @@ Sub page_MsgBoxResult(returnName As String,result As String)
 		map1.Put(logininp1.Text,base64)
 		File.WriteMap(File.DirApp,"verifyCodes.map",map1)
 		
-		sendEmail(logininp1.Text,"重制密码","点此链接重制密码。"&link)
+		sendEmail(logininp1.Text,page.XTR("0010","重置密码"),page.XTR("0011","点此链接重置密码。")&link)
     End If
 End Sub
 '*************************************************************
@@ -347,16 +345,16 @@ Sub BuildPurchaseContainer As ABMContainer
 	purchaseCont.AddRows(5,True,"").AddCells12(1,"")
 	purchaseCont.BuildGrid ' IMPORTANT!
 	Dim infolbl As ABMLabel
-	infolbl.Initialize(page, "infolbl", "购买学翻译软件：",ABM.SIZE_H4,False,"leftLblTheme")
+	infolbl.Initialize(page, "infolbl", page.XTR("0012","购买学翻译软件："),ABM.SIZE_H4,False,"leftLblTheme")
 	purchaseCont.Cell(1,1).AddComponent(infolbl)
 	'Dim emaillbl As ABMLabel
 	'emaillbl.Initialize(page, "emaillbl", "邮箱：",ABM.SIZE_SPAN,False,"leftLblTheme")
 	'infocont.Cell(2,1).AddComponent(emaillbl)
 	Dim infopara As ABMLabel
-	infopara.Initialize(page,"infopara","通过学翻译软件，您可以掌握进行翻译需要做的准备，并获得参赛资格",ABM.SIZE_PARAGRAPH,False,"leftLblTheme")
+	infopara.Initialize(page,"infopara",page.XTR("0013","通过学翻译软件，您可以掌握进行翻译需要做的准备，并获得参赛资格"),ABM.SIZE_PARAGRAPH,False,"leftLblTheme")
 	
 	Dim buyBtn As ABMButton
-    buyBtn.InitializeFlat(page,"buybtn","","","购买","")
+	buyBtn.InitializeFlat(page,"buybtn","","",page.XTR("0014","购买"),"")
 	Dim image As ABMImage
 	image.Initialize(page,"iamge","../images/xfy.jpg",1.0)
 
@@ -372,26 +370,26 @@ Sub BuildInfoContainer(xm As String, verified As String, paid As String) As ABMC
 	infocont.AddRows(5,True,"").AddCells12(1,"")
 	infocont.BuildGrid ' IMPORTANT!
 	Dim infolbl As ABMLabel
-	infolbl.Initialize(page, "infolbl", "用户信息：",ABM.SIZE_H4,False,"leftLblTheme")
+	infolbl.Initialize(page, "infolbl", page.XTR("0015","用户信息："),ABM.SIZE_H4,False,"leftLblTheme")
 	infocont.Cell(1,1).AddComponent(infolbl)
 	'Dim emaillbl As ABMLabel
 	'emaillbl.Initialize(page, "emaillbl", "邮箱：",ABM.SIZE_SPAN,False,"leftLblTheme")
 	'infocont.Cell(2,1).AddComponent(emaillbl)
 	Dim emailinp As ABMInput
-	emailinp.Initialize(page, "emailinp",ABM.INPUT_EMAIL,"邮箱", False, "input：")
+	emailinp.Initialize(page, "emailinp",ABM.INPUT_EMAIL,page.XTR("0016","邮箱"), False, "input：")
 	emailinp.Enabled=False
 	emailinp.Text=ws.Session.GetAttribute("authName")
 	Dim nameinp As ABMInput
-	nameinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,"姓名", False, "input：")
+	nameinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,page.XTR("0017","姓名"), False, "input：")
 	nameinp.Enabled=False
 	nameinp.Text=xm
 
 	Dim emailverifiedinp As ABMInput
-	emailverifiedinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,"邮箱验证状态", False,"input：")
+	emailverifiedinp.Initialize(page, "emailinp",ABM.INPUT_TEXT,page.XTR("0018","邮箱验证状态"), False,"input：")
 	emailverifiedinp.Enabled=False
 	emailverifiedinp.Text=verified
 	Dim paidinp As ABMInput
-	paidinp.Initialize(page, "paidinp",ABM.INPUT_TEXT,"付费情况", False, "input：")
+	paidinp.Initialize(page, "paidinp",ABM.INPUT_TEXT,page.XTR("0019","付费情况"), False, "input：")
 	paidinp.Enabled=False
 	paidinp.Text=paid
 
@@ -445,7 +443,7 @@ Sub SMTP_MessageSent(Success As Boolean)
 	Log(Success)
 	If Success Then
 		ABMLoginHandler.closeSheet(page)
-		page.ShowToast("","","已发送",2000,False)
+		page.ShowToast("","",page.XTR("0020","已发送"),2000,False)
 		Log("Message sent successfully")
 	Else
 		Log("Error sending message")

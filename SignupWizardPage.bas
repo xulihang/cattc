@@ -149,9 +149,10 @@ End Sub
 
 
 Sub ConnectPage()
+	ABMShared.enableMultilanguage(ws,page)
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
-		page.ShowToast("loginedToast","","你已经登录了",2000,False)
+		page.ShowToast("loginedToast","",page.XTR("0001","你已经登录了"),2000,False)
 		Sleep(2000)
 		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 	Else
@@ -160,11 +161,11 @@ Sub ConnectPage()
 	
 	'page.Cell(1,1).AddComponent(ABMShared.BuildParagraphWithTheme(page, "content",  "Welcome To Our Home Page","contentTheme"))
 	Dim wizB As ABMSmartWizard
-	wizB.Initialize(page,"wizB","上一步","下一步","完成","redWiz")
+	wizB.Initialize(page,"wizB",page.XTR("0002","上一步"),page.XTR("0003","下一步"),page.XTR("0004","完成"),"redWiz")
 	
-	wizB.AddStep("stepB1","第一步","邮箱","mdi-communication-email",BuildContainer("StepB1Cont"),ABM.SMARTWIZARD_STATE_ACTIVE)
-	wizB.AddStep("stepB2","第二步","姓名","mdi-action-account-circle",BuildContainer("StepB2Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
-	wizB.AddStep("stepB3","第三步","密码","",BuildContainer("StepB3Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
+	wizB.AddStep("stepB1",page.XTR("0005","第一步"),page.XTR("0006","邮箱"),"mdi-communication-email",BuildContainer("StepB1Cont"),ABM.SMARTWIZARD_STATE_ACTIVE)
+	wizB.AddStep("stepB2",page.XTR("0007","第二步"),page.XTR("0008","姓名"),"mdi-action-account-circle",BuildContainer("StepB2Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
+	wizB.AddStep("stepB3",page.XTR("0009","第三步"),page.XTR("0010","密码"),"",BuildContainer("StepB3Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	page.Cell(1,1).AddComponent(wizB)
 	ABMShared.ConnectFooter(page)
 	
@@ -185,7 +186,7 @@ public Sub BuildPage()
 	' show the spinning cicles while page is loading....
 	page.ShowLoader=True
 	page.PageHTMLName = "index.html"
-	page.PageTitle = "翻译大赛"  ' You can also set this as a property in "ABMShared.BuildNavigationBar" below...
+	page.PageTitle = "翻译大赛 CATTCC"  ' You can also set this as a property in "ABMShared.BuildNavigationBar" below...
 	
 	'  Google SEO stuff...
 	page.PageDescription = ""
@@ -222,7 +223,7 @@ Sub BuildContainer(ID As String) As ABMContainer
 			'Dim emaillbl As ABMLabel = ABMShared.BuildHeader(page, ID & "emaillbl", "邮箱地址")
 			'cont.Cell(1,1).AddComponent(emaillbl)
 			Dim emailinp As ABMInput
-			emailinp.Initialize(page, "inp", ABM.INPUT_TEXT, "邮箱地址:", False, "redInput")
+			emailinp.Initialize(page, "inp", ABM.INPUT_TEXT, page.XTR("0011","邮箱地址:"), False, "redInput")
 			'emailinp.PlaceHolderText = "write your email address"
 			cont.Cell(1,1).AddComponent(emailinp)
 		Case "StepB2Cont"
@@ -231,7 +232,7 @@ Sub BuildContainer(ID As String) As ABMContainer
 			'Dim namelbl As ABMLabel = ABMShared.BuildHeader(page, ID & "namelbl", "姓名")
 			'cont.Cell(1,1).AddComponent(namelbl)
 			Dim nameinp As ABMInput
-			nameinp.Initialize(page, "inp", ABM.INPUT_TEXT, "姓名:", False, "redInput")
+			nameinp.Initialize(page, "inp", ABM.INPUT_TEXT, page.XTR("0012","姓名:"), False, "redInput")
 			'nameinp.PlaceHolderText = "write your name"
 			cont.Cell(1,1).AddComponent(nameinp)
 		Case "StepB3Cont"
@@ -240,7 +241,7 @@ Sub BuildContainer(ID As String) As ABMContainer
 			'Dim pwdlbl As ABMLabel = ABMShared.BuildHeader(page, ID & "pwdlbl", "密码")
 			'cont.Cell(1,1).AddComponent(pwdlbl)
 			Dim addressinp As ABMInput
-			addressinp.Initialize(page, "inp",ABM.INPUT_PASSWORD,"密码:", False, "redInput")
+			addressinp.Initialize(page, "inp",ABM.INPUT_PASSWORD,page.XTR("0013","密码:"), False, "redInput")
 			'addressinp.PlaceHolderText = "write your address"
 			cont.Cell(1,1).AddComponent(addressinp)
 	End Select
@@ -306,7 +307,7 @@ Sub wizB_NavigationToStep(fromReturnName As String, toReturnName As String)
 					wizB.SetStepState("stepB1", ABM.SMARTWIZARD_STATE_ERROR)
 					wizB.NavigateCancel(toReturnName) ' important
 				Else if emailExists(emailinp.Text) Then
-					page.ShowToast("existToast","","邮件已被注册",2000,False)
+					page.ShowToast("existToast","",page.XTR("0014","邮件已被注册"),2000,False)
 					wizB.SetStepState("stepB1", ABM.SMARTWIZARD_STATE_ERROR)
 					wizB.NavigateCancel(toReturnName) ' important
 				Else
@@ -358,13 +359,13 @@ Sub wizB_NavigationFinished(ReturnName As String)
 		password=passwordinp.Text
 		Log(email&xm&password)
 		If emailSent=True Then
-			page.ShowToast("","","请求发送中，请等待",1000,False)
+			page.ShowToast("","",page.XTR("0015","请求发送中，请等待"),1000,False)
 			Return
 		Else
-			page.ShowToast("","","请求发送中，请等待",1000,False)
+			page.ShowToast("","",page.XTR("0015","请求发送中，请等待"),1000,False)
 		End If
 		If emailExists(email) Then '提交阶段再次验证
-			page.ShowToast("doneToast","","注册失败，邮箱已被注册",2000,False)
+			page.ShowToast("doneToast","",page.XTR("0016","注册失败，邮箱已被注册"),2000,False)
 			Return
 		End If
 		Try
@@ -372,7 +373,7 @@ Sub wizB_NavigationFinished(ReturnName As String)
 			sendEmail(email,"【计算机辅助翻译与技术传播大赛】验证邮件","请访问以下链接激活邮件："&generateLink(email))
 		
 		Catch
-			page.ShowToast("doneToast","","注册失败",2000,False)
+			page.ShowToast("doneToast","",page.XTR("0017","注册失败"),2000,False)
 			Log(LastException)
 		End Try
 	End If
@@ -424,12 +425,12 @@ End Sub
 Sub SMTP_MessageSent(Success As Boolean)
 	Log(Success)
 	If Success Then
-		page.ShowToast("doneToast","","注册成功,已发送一封验证邮件到您的邮箱。",3000,False)
+		page.ShowToast("doneToast","",page.XTR("0018","注册成功,已发送一封验证邮件到您的邮箱。"),3000,False)
 		Sleep(3000)
 		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 		Log("Message sent successfully")
 	Else
-		page.ShowToast("doneToast","","注册已成功,但验证邮件发送失败。",5000,False)
+		page.ShowToast("doneToast","",page.XTR("0019","注册已成功,但验证邮件发送失败。"),5000,False)
 		Sleep(5000)
 		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 		Log("Error sending message")
