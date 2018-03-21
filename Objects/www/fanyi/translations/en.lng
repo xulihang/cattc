@@ -23,6 +23,15 @@ abmloginhandler_0017;Email does not exist
 answerpage_0001;C2E
 answerpage_0002;E2C
 answerpage_0003;TC
+resetpasswordpage_0001;Email:
+resetpasswordpage_0002;New password:
+resetpasswordpage_0003;Repeat new password:
+resetpasswordpage_0004;Submit
+resetpasswordpage_0005;You password has been changed successfully
+resetpasswordpage_0006;Info
+resetpasswordpage_0007;Yes
+resetpasswordpage_0008;Password not the same.
+resetpasswordpage_0009;Wrong
 homepage_0001;Invitation
 homepage_0002;The seventh Computer-aided Translation and Technical Communication Competition
 homepage_0003;Answers
@@ -43,6 +52,8 @@ homepage_0017;Name
 homepage_0018;Email verified
 homepage_0019;Paid
 homepage_0020;Sent
+homepage_0021;the request has been sent, please wait for the result
+homepage_0022;sending, please wait
 signupwizardpage_0001;You have alreadly logined.
 signupwizardpage_0002;previous
 signupwizardpage_0003;next

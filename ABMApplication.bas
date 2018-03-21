@@ -282,7 +282,7 @@ public Sub BuildPage()
 	' initialize this page using our theme
 	AppPage.InitializeWithTheme(ABMShared.AppName, "/ws/" & ABMShared.AppName, False, ABMShared.SessionMaxInactiveIntervalSeconds , theme)
 	AppPage.ShowLoader=True
-	AppPage.PageTitle = "Template"
+	AppPage.PageTitle = "Loading..."
 	AppPage.PageDescription = "Template for ABMaterial, a Material UI Framework for B4J"
 	AppPage.PageHTMLName = "index.html"
 	AppPage.PageKeywords = ""
@@ -310,7 +310,7 @@ End Sub
 
 public Sub ConnectPage()
 	' you dynamic stuff
-			
+	ABMShared.enableMultilanguage(ws,AppPage)
 	AppPage.Refresh ' IMPORTANT
 	
 	' Tell the browser we finished loading

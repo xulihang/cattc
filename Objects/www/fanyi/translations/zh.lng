@@ -23,6 +23,15 @@ abmloginhandler_0015;邮箱号或密码错
 answerpage_0001;汉译英
 answerpage_0002;英译汉
 answerpage_0003;技术传播
+resetpasswordpage_0001;邮箱：
+resetpasswordpage_0002;请输入新密码：
+resetpasswordpage_0003;请再输入新密码：
+resetpasswordpage_0004;提交
+resetpasswordpage_0005;密码修改成功
+resetpasswordpage_0006;通知
+resetpasswordpage_0007;好的
+resetpasswordpage_0008;密码不一致
+resetpasswordpage_0009;错误
 homepage_0001;邀请函
 homepage_0002;第七届全国计算机辅助翻译大赛
 homepage_0003;查看答题情况
@@ -32,6 +41,8 @@ homepage_0006;忘记密码
 homepage_0007;确认
 homepage_0008;取消
 homepage_0009;邮箱不存在
+homepage_0021;已发送请求，请等待
+homepage_0022;发送中，请等待
 homepage_0010;重置密码
 homepage_0011;点此链接重置密码。
 homepage_0012;购买学翻译软件：

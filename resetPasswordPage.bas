@@ -154,17 +154,17 @@ Sub ConnectPage()
 	'ABMShared.ConnectNavigationBar(page)
 	
     Dim emailinp As ABMInput
-	emailinp.Initialize(page,"emailinp",ABM.INPUT_EMAIL,"邮箱：",False,"")
+	emailinp.Initialize(page,"emailinp",ABM.INPUT_EMAIL,page.XTR("0001","邮箱："),False,"")
 	email=File.ReadString(File.DirApp,"EmailToBeReset")
 	emailinp.Text=email
 	emailinp.Enabled=False
 	File.Delete(File.DirApp,"EmailToBeReset") '避免其它人再修改
 	Dim pwd1 As ABMInput
-	pwd1.Initialize(page,"pwd1inp",ABM.INPUT_PASSWORD,"请输入新密码：",False,"")
+	pwd1.Initialize(page,"pwd1inp",ABM.INPUT_PASSWORD,page.XTR("0002","请输入新密码："),False,"")
 	Dim pwd2 As ABMInput
-	pwd2.Initialize(page,"pwd2inp",ABM.INPUT_PASSWORD,"请再输入新密码：",False,"")
+	pwd2.Initialize(page,"pwd2inp",ABM.INPUT_PASSWORD,page.XTR("0003","请再输入新密码："),False,"")
 	Dim btn1 As ABMButton
-	btn1.InitializeFlat(page, "btn1", "", "", "提交", "transparent")
+	btn1.InitializeFlat(page, "btn1", "", "", page.XTR("0004","提交"), "transparent")
 	page.Cell(1,1).AddComponent(emailinp)
 	page.Cell(2,1).AddComponent(pwd1)
 	page.Cell(3,1).AddComponent(pwd2)
@@ -186,7 +186,7 @@ public Sub BuildPage()
 	' show the spinning cicles while page is loading....
 	page.ShowLoader=True
 	page.PageHTMLName = "index.html"
-	page.PageTitle = "重制密码"  ' You can also set this as a property in "ABMShared.BuildNavigationBar" below...
+	page.PageTitle = "重置密码"  ' You can also set this as a property in "ABMShared.BuildNavigationBar" below...
 	
 	'  Google SEO stuff...
 	page.PageDescription = ""
@@ -197,7 +197,7 @@ public Sub BuildPage()
 	' faint green dot (on title bar) when connected - red when not connected with web socket
 	page.ShowConnectedIndicator = True
 	
-	ABMShared.BuildNavigationBarextra(page,  "重制密码","../images/logo.png", "Home", "Home", "Home")
+	ABMShared.BuildNavigationBarextra(page,  "重置密码","../images/logo.png", "Home", "Home", "Home")
 	
 	page.AddRows(4,True,"").AddCells12(1,"")
 	page.BuildGrid ' IMPORTANT!
@@ -216,11 +216,11 @@ Sub btn1_Clicked(Target As String)
 	Log(pwd1inp.Text)
     If pwd1inp.Text=pwd2inp.Text Then
 		changePwd(email,pwd1inp.Text)
-		page.Msgbox("","密码修改成功","通知","好的",False,ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
+		page.Msgbox("",page.XTR("0005","密码修改成功"),page.XTR("0006","通知"),page.XTR("0007","好的"),False,ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
 	    Sleep(1000)
 		ABMShared.NavigateToPage(ws,ABMPageId,"../HomePage")
 	Else
-		page.Msgbox("","密码不一致","错误","好的",False,ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
+		page.Msgbox("",page.XTR("0008","密码不一致"),page.XTR("0009","错误"),page.XTR("0007","好的"),False,ABM.MSGBOX_POS_CENTER_CENTER,"redmsgbox")
     End If
 
 End Sub

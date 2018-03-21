@@ -24,6 +24,7 @@ public Sub HandleLogin(LoginFromPageID As String, Page As ABMPage)
 	If ABMShared.wrongRecord.IsInitialized=False Then
 		ABMShared.wrongRecord.Initialize
 	End If
+	
 	If Page.ws.Session.GetAttribute2("IsAuthorized", "") = "" Then
 		'Dim loginpwd As String = ABM.LoadLogin(AppPage, AppName)
         Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
@@ -154,10 +155,12 @@ End Sub
 
 
 public Sub ShowLogin(page As ABMPage)
+	
 	page.ShowModalSheet("login")
 	Dim mymodal As ABMModalSheet = page.ModalSheet("login")
 	Dim logininp1 As ABMInput = mymodal.Content.Component("logininp1")
 	logininp1.SetFocus
+
 End Sub
 
 public Sub CancelLogin(page As ABMPage)
@@ -174,6 +177,7 @@ End Sub
 
 
 Sub BuildLoginSheet(AppPage As ABMPage) As ABMModalSheet
+
 	Dim myModal As ABMModalSheet
 	myModal.Initialize(AppPage, "login", False,  False,"redModal")
 	'myModal.Content.UseTheme("modalcontent")
