@@ -189,15 +189,15 @@ Sub BuildLoginSheet(AppPage As ABMPage) As ABMModalSheet
 	myModal.Content.BuildGrid 'IMPORTANT once you loaded the complete grid AND before you start adding components
 	
 	' add paragraph	
-	myModal.Content.Cell(1,1).AddComponent(ABMShared.BuildParagraphBQWithoutZDepth( AppPage,"par1",AppPage.XTR("0016","请输入邮箱号和密码：")) )
+	myModal.Content.Cell(1,1).AddComponent(ABMShared.BuildParagraphBQWithoutZDepth( AppPage,"par1","请输入邮箱号和密码：") )
 
 	' create the input fields for the content
 	Dim inp1 As ABMInput
-	inp1.Initialize(AppPage, "logininp1", ABM.INPUT_TEXT, AppPage.XTR("0010","邮箱"),  False, "redInput")
+	inp1.Initialize(AppPage, "logininp1", ABM.INPUT_TEXT, "邮箱",  False, "redInput")
 	myModal.Content.Cell(3,1).AddComponent(inp1)
 	
 	Dim inp2 As ABMInput
-	inp2.Initialize(AppPage, "logininp2", ABM.INPUT_PASSWORD, AppPage.XTR("0011","密码"), False, "redInput")
+	inp2.Initialize(AppPage, "logininp2", ABM.INPUT_PASSWORD, "密码", False, "redInput")
 	myModal.Content.Cell(3,1).AddComponent(inp2)
 	
 	myModal.Footer.AddRowsM( 2,True,0,0, "").AddCells12(1,"")
@@ -205,15 +205,15 @@ Sub BuildLoginSheet(AppPage As ABMPage) As ABMModalSheet
 	
 	' create the button for the footer
 	Dim msbtn1 As ABMButton
-	msbtn1.InitializeFlat(AppPage, "loginbtn", "", "", AppPage.XTR("0012","登录"), "transparentbtn")
+	msbtn1.InitializeFlat(AppPage, "loginbtn", "", "", "登录", "transparentbtn")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn1)	
 
 	Dim msbtn2 As ABMButton
-	msbtn2.InitializeFlat(AppPage, "logincancelbtn", "", "", AppPage.XTR("0013","取消"), "transparentbtn")
+	msbtn2.InitializeFlat(AppPage, "logincancelbtn", "", "", "取消", "transparentbtn")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn2)	
 	
 	Dim msbtn3 As ABMButton
-	msbtn3.InitializeFlat(AppPage, "forgetpassbtn", "", "", AppPage.XTR("0014","忘记密码"), "transparentbtn")
+	msbtn3.InitializeFlat(AppPage, "forgetpassbtn", "", "", "忘记密码", "transparentbtn")
 	myModal.Footer.Cell(1,1).AddComponent(msbtn3)
 
 	Return myModal

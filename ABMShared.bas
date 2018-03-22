@@ -227,12 +227,16 @@ Sub BuildTheme(themeName As String)
 	MyTheme.SmartWizard("redWiz").Colorize(ABM.COLOR_RED)
 	MyTheme.SmartWizard("redWiz").SetResponsiveType(ABM.SMARTWIZARD_RESPONSIVE_USEALTICON, 601)
 	
+	MyTheme.AddButtonTheme("redbtn1")
+	MyTheme.Button("redbtn1").BackColor=ABM.COLOR_RED
+	MyTheme.Button("redbtn1").ForeColor=ABM.COLOR_WHITE
+	
 	MyTheme.AddButtonTheme("transparentbtn")
 	MyTheme.Button("transparentbtn").BackColor=ABM.COLOR_TRANSPARENT
 	
 	MyTheme.AddCardTheme("cardRedTheme")
 	MyTheme.Card("cardRedTheme").ActionForeColor=ABM.COLOR_RED
-	
+	MyTheme.Card("cardRedTheme").TitleForeColor=ABM.COLOR_YELLOW
 	MyTheme.AddModalSheetTheme("redModal")
 	MyTheme.ModalSheet("redModal").Colorize(ABM.COLOR_RED)
 	'MyTheme.ModalSheet("redModal").FooterBackColor=ABM.COLOR_RED
@@ -321,11 +325,11 @@ Sub BuildFooter(page As ABMPage)
 End Sub
 
 Sub enableMultilanguage(ws As WebSocket, page As ABMPage)
-	page.SetAcceptedLanguages(Array As String("en", "zh"), "zh")
+	page.SetAcceptedLanguages(Array As String("zh", "en"), "zh")
 	ABM.LoadTranslations(File.DirApp & "/www/" & AppName & "/translations/")
 	Log(File.DirApp & "/www/" & AppName & "/translations/")
 	Dim ActiveFoundLanguage As String = page.DetectLanguage(ws.UpgradeRequest.GetHeader("Accept-Language"))
-	page.SetActiveLanguage("en", "" )
+	page.SetActiveLanguage(ActiveFoundLanguage, "" )
 End Sub
 
 Sub ConnectFooter(page As ABMPage)

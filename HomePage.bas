@@ -21,7 +21,7 @@ Sub Class_Globals
 	Private ABMPageId As String = ""
 	' your own variables
 	Private smtp As SMTP
-	private sent as Boolean = False
+	Private sent As Boolean = False
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
@@ -154,7 +154,8 @@ End Sub
 Sub ConnectPage()
 	ABMShared.enableMultilanguage(ws,page)	
 	Dim card1 As ABMCard
-	card1.InitializeAsCard(page,"card1",page.XTR("0001","邀请函"),page.XTR("0002","第七届全国计算机辅助翻译大赛"),ABM.CARD_NOTSPECIFIED,"cardRedTheme")
+	card1.InitializeAsCard(page,"card1","",page.XTR("0002","第七届全国计算机辅助翻译与技术传播大赛进行中，欢迎您的参加！"),ABM.CARD_NOTSPECIFIED,"cardRedTheme")
+	
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
 		'获取用户信息
@@ -172,12 +173,17 @@ Sub ConnectPage()
 		
 		ABMShared.ConnectNavigationBarLogined(page)
 		page.Cell(2,1).AddComponent(BuildInfoContainer(xm,verified,paid))
+		If paid="未付款" Then
+		    page.Cell(3,1).AddComponent(BuildPurchaseContainer)
+		End If
+		card1.Image="../images/back_without_invitation.jpg"
 		card1.AddAction(page.XTR("0003","查看答题情况"))
 	Else
 		Dim bmlbl As ABMLabel
 		bmlbl.Initialize(page,"bmlbl","报名费（registry fee）：30 RMB",ABM.SIZE_SPAN,False,"lightredzdepth")
-		page.Cell(2,1).AddComponent(BuildPurchaseContainer)
+		'page.Cell(2,1).AddComponent(BuildPurchaseContainer)
 		ABMShared.ConnectNavigationBar2(page,  "Home", "Home", "Home",  Not(ws.Session.GetAttribute2("IsAuthorized", "") = ""))		
+		card1.Image="../images/back.jpg"
 		card1.AddAction(page.XTR("0004","报名"))
 	End If
 
@@ -194,7 +200,7 @@ Sub ConnectPage()
 
 	' NEW, because we use ShowLoaderType=ABM.LOADER_TYPE_MANUAL
 	page.FinishedLoading 'IMPORTANT
-
+	
 	ws.GetElementByID("login-footer-forgetpassbtn").SetCSS("padding","0")
 	ws.GetElementByID("login-footer-loginbtn").SetCSS("padding","0")
 	ws.GetElementByID("login-footer-logincancelbtn").SetCSS("padding","0")
@@ -205,6 +211,15 @@ Sub card1_LinkClicked(Card As String, Action As String)
 	If Action=page.XTR("0004","报名") Then
 		ABMShared.NavigateToPage(ws, ABM.GetPageID(page, "SignupWizardPage",ws), "../SignupWizardPage")
 	Else
+		Dim email,paid As String
+		email=ws.Session.GetAttribute("authName")
+		Dim list1 As List
+		list1=getInfo(email)
+		paid=list1.Get(2)
+		If paid="未付款" Then
+			ws.Alert("请先付款")
+			Return
+		End If
 		ABMShared.NavigateToPage(ws, ABM.GetPageID(page, "AnswerPage",ws), "../AnswerPage")
 	End If
 	
@@ -249,7 +264,7 @@ public Sub BuildPage()
 
 	'IMPORTANT - Build the Grid before you start adding components ( with ConnectPage()!!! )
 	'page.BuildGrid
-	page.AddRows(2,True,"").AddCells12(1,"")
+	page.AddRows(3,True,"").AddCells12(1,"")
 	page.BuildGrid ' IMPORTANT!
 	
 	ABMLoginHandler.BuildModalSheets(page)
@@ -299,7 +314,7 @@ Sub page_MsgBoxResult(returnName As String,result As String)
 		code=randomNum
 		Dim link As String
 		base64=getBase64(logininp1.Text&"&"&code)
-		link="http://xulihang.me/verify?base64="&base64
+		link="http://cattc-contest.com/verify?base64="&base64
 		Dim map1 As Map
 		map1.Initialize
 		If File.Exists(File.DirApp,"verifyCodes.map") Then
@@ -312,6 +327,11 @@ Sub page_MsgBoxResult(returnName As String,result As String)
     End If
 End Sub
 '*************************************************************
+
+Sub buybtn_Clicked(Target As String)
+	ws.Alert("请一定要输入正确的email地址，并记住交易完成后的交易单号")
+	ABMShared.NavigateToPage(ws,ABMPageId,"https://cattc.onfastspring.com/xfy-making-learning-translation-easy")
+End Sub
 
 
 ' clicked on the navigation bar
@@ -331,8 +351,8 @@ Sub Page_NavigationbarClicked(Action As String, Value As String)
 	
 	If Action = "HomeDummy" Then
 		ConnectPage
-		'ABMShared.NavigateToPage(ws, ABMPageId, Value)
 		Return
+		'ABMShared.NavigateToPage(ws, ABMPageId, Value)
 	End If
 	
 	If Action <> "Home" Then
@@ -353,22 +373,22 @@ Sub BuildPurchaseContainer As ABMContainer
 	purchaseCont.AddRows(5,True,"").AddCells12(1,"")
 	purchaseCont.BuildGrid ' IMPORTANT!
 	Dim infolbl As ABMLabel
-	infolbl.Initialize(page, "infolbl", page.XTR("0012","购买学翻译软件："),ABM.SIZE_H4,False,"leftLblTheme")
+	infolbl.Initialize(page, "infolbl", page.XTR("0012","报名缴费："),ABM.SIZE_H4,False,"leftLblTheme")
 	purchaseCont.Cell(1,1).AddComponent(infolbl)
 	'Dim emaillbl As ABMLabel
 	'emaillbl.Initialize(page, "emaillbl", "邮箱：",ABM.SIZE_SPAN,False,"leftLblTheme")
 	'infocont.Cell(2,1).AddComponent(emaillbl)
 	Dim infopara As ABMLabel
-	infopara.Initialize(page,"infopara",page.XTR("0013","通过学翻译软件，您可以掌握进行翻译需要做的准备，并获得参赛资格"),ABM.SIZE_PARAGRAPH,False,"leftLblTheme")
+	infopara.Initialize(page,"infopara",page.XTR("0013","缴费后可以获得参赛资格并收到组委会提供的CAT大礼包。"),ABM.SIZE_PARAGRAPH,False,"leftLblTheme")
 	
 	Dim buyBtn As ABMButton
-	buyBtn.InitializeFlat(page,"buybtn","","",page.XTR("0014","购买"),"")
+	buyBtn.InitializeFlat(page,"buybtn","","",page.XTR("0014","前去支付"),"redbtn1")
 	Dim image As ABMImage
 	image.Initialize(page,"iamge","../images/xfy.jpg",1.0)
 
 	purchaseCont.Cell(2,1).AddComponent(infopara)
-	purchaseCont.Cell(3,1).AddComponent(image)
-	purchaseCont.Cell(4,1).AddComponent(buyBtn)
+	'purchaseCont.Cell(3,1).AddComponent(image)
+	purchaseCont.Cell(3,1).AddComponent(buyBtn)
 	Return purchaseCont
 End Sub
 
@@ -427,9 +447,8 @@ Sub checkEmail(email As String) As Boolean
 		Return True
 	Else
 		Return False
-    End If
+	End If
 End Sub
-
 
 
 Sub sendEmail(target As String,subject As String,body As String)
@@ -437,7 +456,9 @@ Sub sendEmail(target As String,subject As String,body As String)
 	Dim list1 As List=File.ReadList(File.DirApp,"emailaccount.conf")
 	servUsername=list1.Get(0)
 	servPassword=list1.Get(1)
-	smtp.Initialize("smtp.163.com", "465",servUsername ,servPassword , "SMTP")
+	servUsername=servUsername&Rnd(1,4)&"@cattc-contest.com"
+	Log(servUsername)
+	smtp.Initialize("smtp.exmail.qq.com", "465",servUsername ,servPassword , "SMTP")
 	smtp.AuthMethod = smtp.AUTH_PLAIN
 	smtp.UseSSL=True
 	smtp.HtmlBody = False

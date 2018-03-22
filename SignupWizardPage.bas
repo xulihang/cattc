@@ -165,7 +165,9 @@ Sub ConnectPage()
 	
 	wizB.AddStep("stepB1",page.XTR("0005","第一步"),page.XTR("0006","邮箱"),"mdi-communication-email",BuildContainer("StepB1Cont"),ABM.SMARTWIZARD_STATE_ACTIVE)
 	wizB.AddStep("stepB2",page.XTR("0007","第二步"),page.XTR("0008","姓名"),"mdi-action-account-circle",BuildContainer("StepB2Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
-	wizB.AddStep("stepB3",page.XTR("0009","第三步"),page.XTR("0010","密码"),"",BuildContainer("StepB3Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
+	wizB.AddStep("stepB3",page.XTR("0009","第三步"),"所属单位","mdi-communication-location-on",BuildContainer("StepB3Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
+	wizB.AddStep("stepB4","第四步","手机号码","mdi-communication-phone",BuildContainer("StepB4Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
+	wizB.AddStep("stepB5","第五步",page.XTR("0010","密码"),"",BuildContainer("StepB5Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	page.Cell(1,1).AddComponent(wizB)
 	ABMShared.ConnectFooter(page)
 	
@@ -240,6 +242,24 @@ Sub BuildContainer(ID As String) As ABMContainer
 			cont.BuildGrid ' IMPORTANT!
 			'Dim pwdlbl As ABMLabel = ABMShared.BuildHeader(page, ID & "pwdlbl", "密码")
 			'cont.Cell(1,1).AddComponent(pwdlbl)
+			Dim belonginp As ABMInput
+			belonginp.Initialize(page, "inp",ABM.INPUT_TEXT,"所属单位", False, "redInput")
+			belonginp.PlaceHolderText = "填学校或工作单位或其它"
+			cont.Cell(1,1).AddComponent(belonginp)
+		Case "StepB4Cont"
+			cont.AddRowsM(1, True,0,0,"").AddCells12(1,"")
+			cont.BuildGrid ' IMPORTANT!
+			'Dim pwdlbl As ABMLabel = ABMShared.BuildHeader(page, ID & "pwdlbl", "密码")
+			'cont.Cell(1,1).AddComponent(pwdlbl)
+			Dim phoneinp As ABMInput
+			phoneinp.Initialize(page, "inp",ABM.INPUT_TEXT,"手机号码", False, "redInput")
+			'addressinp.PlaceHolderText = "write your address"
+			cont.Cell(1,1).AddComponent(phoneinp)
+		Case "StepB5Cont"
+			cont.AddRowsM(1, True,0,0,"").AddCells12(1,"")
+			cont.BuildGrid ' IMPORTANT!
+			'Dim pwdlbl As ABMLabel = ABMShared.BuildHeader(page, ID & "pwdlbl", "密码")
+			'cont.Cell(1,1).AddComponent(pwdlbl)
 			Dim addressinp As ABMInput
 			addressinp.Initialize(page, "inp",ABM.INPUT_PASSWORD,page.XTR("0013","密码:"), False, "redInput")
 			'addressinp.PlaceHolderText = "write your address"
@@ -297,8 +317,6 @@ Sub wizB_NavigationToStep(fromReturnName As String, toReturnName As String)
 	Dim wizB As ABMSmartWizard = page.Component("wizB")
 	Dim cont As ABMContainer = wizB.GetStep("StepB1")
 	Dim emailinp As ABMInput = cont.Component("inp")
-	Dim cont As ABMContainer = wizB.GetStep("StepB2")
-	Dim nameinp As ABMInput = cont.Component("inp")
 
 	If fromReturnName.CompareTo(toReturnName) < 0 Then ' to the right
 		Select Case fromReturnName
@@ -314,18 +332,22 @@ Sub wizB_NavigationToStep(fromReturnName As String, toReturnName As String)
 					SetWizardStepStates(wizB, toReturnName, "B")
 					wizB.NavigateGoto(toReturnName) ' important
 				End If
-			Case "stepB2"
-
-				If nameinp.Text = "" Then
-					wizB.SetStepState("stepB2", ABM.SMARTWIZARD_STATE_ERROR)
+			Case "stepB5"
+				' handled in NavigationFinished
+			Case Else
+				Dim cont As ABMContainer = wizB.GetStep(fromReturnName)
+				Dim inp As ABMInput = cont.Component("inp")
+				Log(fromReturnName&toReturnName)
+				If inp.Text = "" Then
+					wizB.SetStepState(fromReturnName, ABM.SMARTWIZARD_STATE_ERROR)
 					wizB.NavigateCancel(toReturnName) ' important
 				Else
 					SetWizardStepStates(wizB, toReturnName, "B")
 					wizB.NavigateGoto(toReturnName) ' important
 
 				End If
-			Case "stepB3"
-				' handled in NavigationFinished
+				
+
 		End Select
 	Else If fromReturnName.CompareTo(toReturnName) > 0 Then ' to the left
 		SetWizardStepStates(wizB, toReturnName, "B")
@@ -339,14 +361,14 @@ End Sub
 Sub wizB_NavigationFinished(ReturnName As String)
 	Log(ReturnName)
 	Dim wizB As ABMSmartWizard = page.Component("wizB")
-	Dim cont As ABMContainer = wizB.GetStep("stepB3")
+	Dim cont As ABMContainer = wizB.GetStep("stepB5")
 	Dim passwordinp As ABMInput = cont.Component("inp")
 	If passwordinp.Text = "" Then
-		wizB.SetStepState("stepB3", ABM.SMARTWIZARD_STATE_ERROR)
-		wizB.NavigateCancel("stepB3") ' important
+		wizB.SetStepState("stepB5", ABM.SMARTWIZARD_STATE_ERROR)
+		wizB.NavigateCancel("stepB5") ' important
 	Else
-		SetWizardStepStates(wizB, "stepB3", "B")
-		Dim email,xm,password As String
+		SetWizardStepStates(wizB, "stepB5", "B")
+		Dim email,xm,password,belong,phone As String
 		' reset the wizard
 		cont = wizB.GetStep("stepB1")
 		Dim emailinp As ABMInput = cont.Component("inp")
@@ -355,8 +377,15 @@ Sub wizB_NavigationFinished(ReturnName As String)
 		Dim nameinp As ABMInput = cont.Component("inp")
 		xm=nameinp.Text
 		cont = wizB.GetStep("stepB3")
+		Dim belonginp As ABMInput = cont.Component("inp")
+		belong=belonginp.Text
+		cont = wizB.GetStep("stepB4")
+		Dim phoneinp As ABMInput = cont.Component("inp")
+		phone=phoneinp.Text
+		cont = wizB.GetStep("stepB5")
 		Dim passwordinp As ABMInput = cont.Component("inp")
 		password=passwordinp.Text
+
 		Log(email&xm&password)
 		If emailSent=True Then
 			page.ShowToast("","",page.XTR("0015","请求发送中，请等待"),1000,False)
@@ -369,7 +398,7 @@ Sub wizB_NavigationFinished(ReturnName As String)
 			Return
 		End If
 		Try
-			signupDone(email,xm,password)
+			signupDone(email,xm,password,belong,phone)
 			sendEmail(email,"【计算机辅助翻译与技术传播大赛】验证邮件","请访问以下链接激活邮件："&generateLink(email))
 		
 		Catch
@@ -379,7 +408,7 @@ Sub wizB_NavigationFinished(ReturnName As String)
 	End If
 End Sub
 
-Sub signupDone(email As String,xm As String,password As String)
+Sub signupDone(email As String,xm As String,password As String,belong As String,phone As String)
 	Dim map1,map2 As Map
 	map1.Initialize
 	map2.Initialize
@@ -387,7 +416,10 @@ Sub signupDone(email As String,xm As String,password As String)
 	map2.Put("password",password)
 	map2.Put("verified","未验证")
 	map2.Put("paid","未付款")
+	map2.Put("belong",belong)
+	map2.Put("phone",phone)
 	map1.Put(email,map2)
+	'Log(map1)
 	ABMShared.kvs.Put(email,map2)
 End Sub
 
@@ -411,7 +443,9 @@ Sub sendEmail(target As String,subject As String,body As String)
 	Dim list1 As List=File.ReadList(File.DirApp,"emailaccount.conf")
 	servUsername=list1.Get(0)
 	servPassword=list1.Get(1)
-	smtp.Initialize("smtp.163.com", "465",servUsername ,servPassword , "SMTP")
+	servUsername=servUsername&Rnd(1,4)&"@cattc-contest.com"
+	Log(servUsername)
+	smtp.Initialize("smtp.exmail.qq.com", "465",servUsername ,servPassword , "SMTP")
 	smtp.AuthMethod = smtp.AUTH_PLAIN
 	smtp.UseSSL=True
 	smtp.HtmlBody = False
@@ -460,7 +494,7 @@ Sub generateLink(email As String) As String
 	code=randomNum
 	Dim link As String
 	base64=getBase64(email&"&"&code)
-	link="http://xulihang.me/verify?type=new&base64="&base64
+	link="http://cattc-contest.com/verify?type=new&base64="&base64
 	Dim map1 As Map
 	map1.Initialize
 	If File.Exists(File.DirApp,"verifyCodes.map") Then
@@ -473,7 +507,7 @@ End Sub
 
 Sub inp_EnterPressed(value As String)
 	Log(currentstep)
-	If currentstep<3 Then
+	If currentstep<5 Then
 		Dim wizB As ABMSmartWizard = page.Component("wizB")
 		Dim cont As ABMContainer = wizB.GetStep("stepB"&(currentstep+1))
 		Dim input As ABMInput = cont.Component("inp")
