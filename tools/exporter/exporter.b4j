@@ -1,0 +1,122 @@
+﻿AppType=JavaFX
+Build1=Default,b4j.example
+File1=main.bjl
+FileGroup1=Default Group
+Group=Default Group
+Library1=jcore
+Library2=jfx
+Library3=jb4xencryption
+Library4=jstringutils
+Library5=jsql
+Library6=jrandomaccessfile
+Library7=json
+Module1=KeyValueStore
+NumberOfFiles=1
+NumberOfLibraries=7
+NumberOfModules=1
+Version=6.01
+@EndOfDesignText@
+#Region Project Attributes 
+	#MainFormWidth: 600
+	#MainFormHeight: 600 
+	#AdditionalJar: sqlite-jdbc-3.7.2
+    #AdditionalJar: bcprov-jdk15on-154
+#End Region
+
+Sub Process_Globals
+	Private fx As JFX
+	Private MainForm As Form
+	Private Button1 As Button
+	Private ListView1 As ListView
+	Private ListView2 As ListView
+	Public kvs As KeyValueStore
+End Sub
+
+Sub AppStart (Form1 As Form, Args() As String)
+	MainForm = Form1
+	MainForm.RootPane.LoadLayout("main") 'Load the layout file.
+	MainForm.Show
+	If File.Exists(File.DirApp, "users.db")=False Then
+		fx.Msgbox(MainForm,"请讲数据库放到程序目录","")
+		ExitApplication
+	End If
+	If kvs.IsInitialized=False Then
+		kvs.Initialize(File.DirApp, "users.db")
+	End If
+End Sub
+
+'Return true to allow the default exceptions handler to handle the uncaught exception.
+Sub Application_Error (Error As Exception, StackTrace As String) As Boolean
+	Return True
+End Sub
+
+Sub Button1_MouseClicked (EventData As MouseEvent)
+	Dim textwriter As TextWriter
+	textwriter.Initialize(File.OpenOutput(File.DirApp,"out.csv",False))
+	Dim sb As StringBuilder
+	sb.Initialize
+	sb.Append("邮箱").Append(TAB).Append("姓名").Append(TAB)
+	sb.Append("单位").Append(TAB).Append("电话").Append(TAB)
+	sb.Append("邮箱验证状态").Append(TAB).Append("付款状态")
+	textwriter.WriteLine(sb.ToString)
+	ListView1.Items.Clear
+	ListView1.Items.AddAll(kvs.ListKeys)
+	ListView2.Items.Clear
+	For Each key In kvs.ListKeys
+		Dim map1 As Map
+		map1=kvs.Get(key)
+		Dim sb2 As StringBuilder
+		sb2.Initialize
+		sb2.Append(key).Append(TAB).Append(map1.Get("xm")).Append(TAB)
+		sb2.Append(map1.Get("belong")).Append(TAB).Append(map1.Get("phone")).Append(TAB)
+		sb2.Append(map1.Get("verified")).Append(TAB).Append(map1.Get("paid"))
+		textwriter.WriteLine(sb2.ToString)
+		ListView2.Items.Add(sb2.ToString)
+	Next
+	textwriter.Close
+	fx.Msgbox(MainForm,"csv文件已导出在程序目录","")
+End Sub
+
+Sub Button2_MouseClicked (EventData As MouseEvent)
+	Dim textwriter As TextWriter
+	textwriter.Initialize(File.OpenOutput(File.DirApp,"out.csv",False))
+	Dim sb As StringBuilder
+	sb.Initialize
+	sb.Append("邮箱").Append(TAB).Append("姓名").Append(TAB)
+	sb.Append("单位").Append(TAB).Append("电话").Append(TAB)
+	sb.Append("邮箱验证状态").Append(TAB).Append("付款状态").Append(TAB)
+	sb.Append("汉译英").Append(TAB).Append("英译汉").Append(TAB)
+	sb.Append("技术传播")
+	textwriter.WriteLine(sb.ToString)
+	ListView1.Items.Clear
+	ListView1.Items.AddAll(kvs.ListKeys)
+	ListView2.Items.Clear
+	For Each key In kvs.ListKeys
+		Dim map1,map2 As Map
+		map1=kvs.Get(key)
+		If File.Exists(File.Combine(File.DirApp,"submitted"),key&"-score.json")=False Then
+			Continue
+		End If
+		map2=getScoreMap(key)
+		Dim sb2 As StringBuilder
+		sb2.Initialize
+		sb2.Append(key).Append(TAB).Append(map1.Get("xm")).Append(TAB)
+		sb2.Append(map1.Get("belong")).Append(TAB).Append(map1.Get("phone")).Append(TAB)
+		sb2.Append(map1.Get("verified")).Append(TAB).Append(map1.Get("paid")).Append(TAB)
+		sb2.Append(map2.Get("汉译英")).Append(TAB).Append(map2.Get("英译汉")).Append(TAB)
+		sb2.Append(map2.Get("技术传播"))
+		textwriter.WriteLine(sb2.ToString)
+		ListView2.Items.Add(sb2.ToString)
+	Next
+	textwriter.Close
+	fx.Msgbox(MainForm,"csv文件已导出在程序目录","")
+End Sub
+
+Sub getScoreMap(email As String) As Map
+    Dim map1 As Map
+	Dim json As JSONParser
+	json.Initialize(File.ReadString(File.Combine(File.DirApp,"submitted"),email&"-score.json"))
+	Dim map1 As Map
+	map1=json.NextObject
+	Return map1
+End Sub

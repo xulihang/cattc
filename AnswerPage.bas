@@ -155,11 +155,33 @@ Sub ConnectPage()
 
 	Dim tabs As ABMTabs
 	tabs.Initialize(page, "tabs", "redTabs")
-	tabs.AddTab("tab1",page.XTR("0001","汉译英"),BuildTabContainer("tab1","汉译英"),3,3,3,3,3,3,True,True,"","")
-	tabs.AddTab("tab2",page.XTR("0002","英译汉"),BuildTabContainer("tab2","英译汉"),3,3,3,3,3,3,True,True,"","")
-	tabs.AddTab("tab3",page.XTR("0003","技术传播"),BuildTabContainer("tab3","技术传播"),3,3,3,3,3,3,True,True,"","")
+	tabs.AddTab("tab1",page.XTR("0001","汉译英"),BuildTabContainer("tab1","汉译英"),4,4,4,12,12,12,True,True,"","")
+	tabs.AddTab("tab2",page.XTR("0002","英译汉"),BuildTabContainer("tab2","英译汉"),4,4,4,12,12,12,True,True,"","")
+	tabs.AddTab("tab3",page.XTR("0003","技术传播"),BuildTabContainer("tab3","技术传播"),4,4,4,12,12,12,True,True,"","")
 	
 	page.Cell(1,1).AddComponent(tabs)
+	Dim statusinp As ABMInput
+	statusinp.Initialize(page,"inp",ABM.INPUT_TEXT,"状态：",False,"redInput")
+	statusinp.Text="未提交"
+	statusinp.Enabled=False
+	Dim scoreinp As ABMInput
+	scoreinp.Initialize(page,"inp",ABM.INPUT_TEXT,"分数：",False,"redInput")
+	scoreinp.Text="未出成绩"
+	scoreinp.Enabled=False
+	Dim submitBtn As ABMButton
+	submitBtn.InitializeFlat(page,"submitBtn","","","提交最终作品","redbtn1")
+	page.Cell(2,1).AddComponent(statusinp)
+	page.Cell(2,2).AddComponent(scoreinp)
+	page.Cell(3,1).AddComponent(submitBtn)
+	
+	loadSaved
+	If File.Exists(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&".json") Then
+		statusinp.Text="已提交"
+	End If
+	If File.Exists(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&"-score.txt") Then
+		scoreinp.Text=File.ReadString(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&"-score.txt")
+	End If
+	
 	ABMShared.ConnectFooter(page)
 	page.Refresh ' IMPORTANT
  
@@ -191,7 +213,11 @@ public Sub BuildPage()
 	
 	ABMShared.BuildNavigationBarextra(page,  "大赛报名","../images/logo.png", "Home", "Home", "Home")
 	
-	page.AddRows(2,True,"").AddCells12(1,"")
+	page.AddRows(1,True,"").AddCells12(1,"")
+	page.AddRows(1,True,"").AddCellsOS(2,0,0,0,7,7,7,"")
+	page.AddRows(1,True,"").AddCellsOS(1,0,0,0,7,7,7,"")
+	page.AddRows(1,True,"").AddCells12(1,"")
+	page.AddRows(1,True,"").AddCells12(1,"")
 	page.BuildGrid ' IMPORTANT!
 	
 	ABMLoginHandler.BuildModalSheets(page)
@@ -213,6 +239,67 @@ End Sub
 
 '*************************************************************
 
+
+Sub saveBtn_Clicked(Target As String)
+	Dim tabs As ABMTabs = page.Component("tabs")
+	Dim tabid As String
+	tabid=Regex.Split("-",Target)(0)
+	Dim conc As ABMContainer = tabs.GetTabPage(tabid)
+	Dim inp As ABMInput =conc.Component("inp")
+
+	saveWork(tabid,inp.Text)
+	
+End Sub
+
+Sub submitBtn_Clicked(Target As String)
+	If submitWork=True Then
+		page.ShowToast("","","已提交",2000,False)
+	End If
+End Sub
+
+Sub saveWork(tabid As String,text As String)
+	If File.Exists(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&".json") Then
+		page.ShowToast("","","您已经正式提交过了",2000,False)
+		Return
+	End If
+	File.WriteString(File.Combine(File.DirApp,"saved"),ws.Session.GetAttribute("authName")&"-"&tabid&".txt",text)
+	page.ShowToast("","","已保存",2000,False)
+End Sub
+
+Sub submitWork As Boolean
+	If File.Exists(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&".json") Then
+		page.ShowToast("","","您已经提交过了",2000,False)
+		Return False
+	End If
+    Dim json As JSONGenerator
+	Dim map1 As Map
+	map1.Initialize
+	Dim i As Int=1
+	For Each item As String In Array As String("汉译英","英译汉","技术传播") 
+		If File.Exists(File.Combine(File.DirApp,"saved"),ws.Session.GetAttribute("authName")&"-"&"tab"&i&".txt") Then
+			map1.Put(item,File.ReadString(File.Combine(File.DirApp,"saved"),ws.Session.GetAttribute("authName")&"-"&"tab"&i&".txt"))
+			i=i+1
+		Else
+			page.ShowToast("","","请先保存所有作品",2000,False)
+			Return False
+		End If
+
+	Next
+	json.Initialize(map1)
+	File.WriteString(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&".json",json.ToString)
+    Return True
+End Sub
+
+Sub loadSaved
+	For i=1 To 3
+		If File.Exists(File.Combine(File.DirApp,"saved"),ws.Session.GetAttribute("authName")&"-"&"tab"&i&".txt") Then
+			Dim tabs As ABMTabs = page.Component("tabs")
+			Dim conc As ABMContainer = tabs.GetTabPage("tab"&i)
+			Dim inp As ABMInput =conc.Component("inp")
+			inp.Text=File.ReadString(File.Combine(File.DirApp,"saved"),ws.Session.GetAttribute("authName")&"-"&"tab"&i&".txt")
+		End If
+	Next
+End Sub
 
 ' clicked on the navigation bar
 Sub Page_NavigationbarClicked(Action As String, Value As String)
@@ -245,12 +332,43 @@ Sub NotWorking(act As String)
 End Sub
 
 Sub BuildTabContainer(id As String, Text As String) As ABMContainer
-	Dim Tabc As ABMContainer
-	Tabc.Initialize(page, id, "tabpagewhite")
-	Tabc.AddRows(2,True,"").AddCells12(1,"")
-	Tabc.BuildGrid ' IMPORTANT!
+	Dim tabc As ABMContainer
 	Dim lbl As ABMLabel
-	lbl.Initialize(page, id & "lbl", Text, ABM.SIZE_H5, True, "")
-	Tabc.Cell(1,1).AddComponent(lbl)
-	Return Tabc
+	lbl.Initialize(page, id , Text, ABM.SIZE_PARAGRAPH, True, "")
+
+	Dim inp As ABMInput
+	inp.Initialize(page,"inp",ABM.INPUT_TEXT,"在此答题",True,"redInput")
+	inp.Align=ABM.INPUT_TEXTALIGN_LEFT
+	Dim saveBtn As ABMButton
+	saveBtn.InitializeFlat(page,"saveBtn","","","保存","redbtn1")
+
+	Select id
+		Case "tab1"
+			tabc.Initialize(page, id, "tabpagewhite")
+			tabc.AddRows(2,True,"").AddCells12(1,"")
+			tabc.AddRows(1,True,"").AddCellsOS(1,0,0,0,6,6,6,"")
+			tabc.BuildGrid ' IMPORTANT!
+			tabc.Cell(1,1).AddComponent(lbl)
+			tabc.Cell(2,1).AddComponent(inp)
+		Case "tab2"
+			tabc.Initialize(page, id, "tabpagewhite")
+			tabc.AddRows(2,True,"").AddCells12(1,"")
+			tabc.AddRows(1,True,"").AddCellsOS(1,0,0,0,6,6,6,"")
+			tabc.BuildGrid ' IMPORTANT!
+			tabc.Cell(1,1).AddComponent(lbl)
+			tabc.Cell(2,1).AddComponent(inp)
+		Case "tab3"
+			tabc.Initialize(page, id, "tabpagewhite")
+			tabc.AddRows(2,True,"").AddCells12(1,"")
+			tabc.AddRows(1,True,"").AddCellsOS(1,0,0,0,6,6,6,"")
+			tabc.BuildGrid ' IMPORTANT!
+
+			tabc.Cell(1,1).AddComponent(lbl)
+			tabc.Cell(2,1).AddComponent(inp)
+
+	End Select
+
+
+	tabc.Cell(3,1).AddComponent(saveBtn)
+	Return tabc
 End Sub

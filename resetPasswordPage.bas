@@ -152,7 +152,7 @@ Sub ConnectPage()
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	
 	'ABMShared.ConnectNavigationBar(page)
-	
+	ABMShared.enableMultilanguage(ws,page)
     Dim emailinp As ABMInput
 	emailinp.Initialize(page,"emailinp",ABM.INPUT_EMAIL,page.XTR("0001","邮箱："),False,"")
 	email=File.ReadString(File.DirApp,"EmailToBeReset")

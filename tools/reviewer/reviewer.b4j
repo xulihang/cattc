@@ -1,0 +1,113 @@
+﻿AppType=JavaFX
+Build1=Default,b4j.example
+File1=main.bjl
+File2=review.bjl
+File3=reviewtab.bjl
+FileGroup1=Default Group
+FileGroup2=Default Group
+FileGroup3=Default Group
+Group=Default Group
+Library1=jcore
+Library2=jfx
+Library3=jsql
+Library4=jrandomaccessfile
+Library5=jb4xencryption
+Library6=json
+Library7=okhttp
+Module1=KeyValueStore
+Module2=review
+NumberOfFiles=3
+NumberOfLibraries=7
+NumberOfModules=2
+Version=6.01
+@EndOfDesignText@
+#Region Project Attributes 
+	#MainFormWidth: 600
+	#MainFormHeight: 600 
+	#AdditionalJar: sqlite-jdbc-3.7.2
+    #AdditionalJar: bcprov-jdk15on-154
+#End Region
+
+Sub Process_Globals
+	Private fx As JFX
+	Private MainForm As Form
+	Private kvs As KeyValueStore
+	Private Button1 As Button
+	Private ListView1 As ListView
+	Private ListView2 As ListView
+	Private emTextField As TextField
+	Private Button2 As Button
+End Sub
+
+Sub AppStart (Form1 As Form, Args() As String)
+	MainForm = Form1
+	MainForm.RootPane.LoadLayout("main") 'Load the layout file.
+	MainForm.Show
+	If File.Exists(File.DirApp, "users.db")=False Then
+		fx.Msgbox(MainForm,"请讲数据库放到程序目录","")
+		ExitApplication
+	End If
+	If kvs.IsInitialized=False Then
+		kvs.Initialize(File.DirApp, "users.db")
+	End If
+End Sub
+
+'Return true to allow the default exceptions handler to handle the uncaught exception.
+Sub Application_Error (Error As Exception, StackTrace As String) As Boolean
+	Return True
+End Sub
+
+Sub ListView2_MouseClicked (EventData As MouseEvent)
+	If ListView2.SelectedItem<>Null Then
+		Dim lbl As Label
+		lbl=ListView2.SelectedItem
+		Dim map1 As Map
+		map1=lbl.Tag
+		review.show(map1.Get("email"))
+	End If
+End Sub
+
+Sub ListView1_MouseClicked (EventData As MouseEvent)
+	If ListView1.SelectedItem<>Null Then
+		Dim lbl As Label
+		lbl=ListView1.SelectedItem
+		Dim map1 As Map
+		map1=lbl.Tag
+		review.show(map1.Get("email"))
+	End If
+End Sub
+
+Sub Button1_MouseClicked (EventData As MouseEvent)
+	ListView1.Items.Clear
+	ListView2.Items.Clear
+	Dim fileslist As List
+	fileslist=File.ListFiles(File.Combine(File.DirApp,"submitted"))
+	For Each filename As String In fileslist
+   	    If filename.Contains("score.json") Then
+			Continue
+        End If
+		If fileslist.IndexOf(filename.Replace(".json","-score.json"))<>-1 Then
+			ListView2.Items.Add(getlbl(filename.Replace(".json","")))
+		Else
+			ListView1.Items.Add(getlbl(filename.Replace(".json","")))
+		End If
+		
+   Next
+
+End Sub
+
+Sub getlbl(email As String) As Label
+	Dim lbl As Label
+	lbl.Initialize("lbl")
+	Dim map1 As Map
+	map1=kvs.Get(email)
+	map1.Put("email",email)
+	lbl.Text=map1.Get("xm")&"-"&map1.Get("belong")
+	lbl.Tag=map1
+    Return lbl
+End Sub
+
+
+Sub Button2_MouseClicked (EventData As MouseEvent)
+	review.show(emTextField.Text)
+End Sub

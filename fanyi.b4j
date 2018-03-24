@@ -51,7 +51,11 @@ Sub AppStart (Args() As String)
 	If ABMShared.kvs.IsInitialized=False Then
 		ABMShared.kvs.Initialize(File.DirApp, "users.db")
 	End If
-
+	'Dim map1 As Map '测试用
+    'map1=ABMShared.kvs.Get("hotmail.com")
+	'map1.Put("paid","已付款")
+	'ABMShared.kvs.Put("hotmail.com",map1)
+	
 	' the user needs to login
 	ABMShared.NeedsAuthorization = False
 	

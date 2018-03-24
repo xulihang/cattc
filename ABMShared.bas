@@ -99,14 +99,28 @@ Sub LogOff(page As ABMPage) 'ignore
 	NavigateToPage(page.ws, page.GetPageID, "../")	
 End Sub
 
-
-
 Sub BuildTheme(themeName As String)
  	' init themes...
 	' themes are used to style every component
 	
 	MyTheme.Initialize(themeName)
-		
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_NORMAL,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_ACCENT1,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_ACCENT2,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_ACCENT3,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_ACCENT4,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_DARKEN1,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_DARKEN2,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_DARKEN3,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_DARKEN4,"#8C0000",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_LIGHTEN1,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_LIGHTEN2,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_LIGHTEN3,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_LIGHTEN4,"#c63131",1)
+	MyTheme.Page.AddColorDefinition("beidared",ABM.INTENSITY_LIGHTEN5,"#c63131",1)
+
+
+
 	' the right TEXTALIGN_RIGHT label theme
 	MyTheme.AddLabelTheme("lbltheme1")
 	MyTheme.Label("lbltheme1").ForeColor = ABM.COLOR_BLACK
@@ -122,7 +136,7 @@ Sub BuildTheme(themeName As String)
 	
 	' a red label theme with no bold
 	MyTheme.AddLabelTheme("lbltheme3")
-	MyTheme.Label("lbltheme3").ForeColor = ABM.COLOR_RED
+	MyTheme.Label("lbltheme3").ForeColor = "beidared"
 	MyTheme.Label("lbltheme3").FontWeight = "normal"
 	MyTheme.Label("lbltheme3").Align = ABM.TEXTALIGN_CENTER
 
@@ -144,15 +158,15 @@ Sub BuildTheme(themeName As String)
 
 	' a label theme
 	MyTheme.AddLabelTheme("lightredzdepth")
-	MyTheme.Label("lightredzdepth").BlockquoteColor=ABM.COLOR_RED
-	MyTheme.Label("lightredzdepth").ForeColor = ABM.COLOR_red
+	MyTheme.Label("lightredzdepth").BlockquoteColor="beidared"
+	MyTheme.Label("lightredzdepth").ForeColor = "beidared"
 	MyTheme.Label("lightredzdepth").FontWeight = "BOLD"
 	MyTheme.Label("lightredzdepth").ZDepth = ABM.ZDEPTH_1
 	
 	' a label theme
 	MyTheme.AddLabelTheme("lightred")
-	MyTheme.Label("lightred").BlockquoteColor=ABM.COLOR_RED
-	MyTheme.Label("lightred").ForeColor = ABM.COLOR_red
+	MyTheme.Label("lightred").BlockquoteColor="beidared"
+	MyTheme.Label("lightred").ForeColor = "beidared"
 	MyTheme.Label("lightred").FontWeight = "BOLD"
 
 	' a toast message theme
@@ -211,8 +225,8 @@ Sub BuildTheme(themeName As String)
 	MyTheme.Row("row1theme").BorderColor = ABM.COLOR_BLACK
 	
 	MyTheme.AddNavigationBarTheme("nav1theme")
-	MyTheme.NavigationBar("nav1theme").TopBarBackColor = ABM.COLOR_red  'ABM.COLOR_RED
-	MyTheme.NavigationBar("nav1theme").TopBarBackColorIntensity = ABM.INTENSITY_DARKEN1
+	MyTheme.NavigationBar("nav1theme").TopBarBackColor = "beidared"  'ABM.COLOR_RED
+	MyTheme.NavigationBar("nav1theme").TopBarBackColorIntensity = ABM.INTENSITY_DARKEN4
 	MyTheme.NavigationBar("nav1theme").TopBarBold = True
 	MyTheme.NavigationBar("nav1theme").TopBarForeColor = ABM.COLOR_WHITE
 	MyTheme.NavigationBar("nav1theme").TopBarForeColorIntensity = ABM.INTENSITY_LIGHTEN2
@@ -224,34 +238,36 @@ Sub BuildTheme(themeName As String)
 	MyTheme.AddSmartWizardTheme("redWiz")
 	'MyTheme.SmartWizard("redWiz").StateActiveForeColor=ABM.COLOR_RED
 	'MyTheme.SmartWizard("redWiz").StateActiveBackColor=ABM.COLOR_RED
-	MyTheme.SmartWizard("redWiz").Colorize(ABM.COLOR_RED)
+	MyTheme.SmartWizard("redWiz").Colorize("beidared")
 	MyTheme.SmartWizard("redWiz").SetResponsiveType(ABM.SMARTWIZARD_RESPONSIVE_USEALTICON, 601)
 	
 	MyTheme.AddButtonTheme("redbtn1")
-	MyTheme.Button("redbtn1").BackColor=ABM.COLOR_RED
+	MyTheme.Button("redbtn1").BackColor="beidared"
 	MyTheme.Button("redbtn1").ForeColor=ABM.COLOR_WHITE
 	
 	MyTheme.AddButtonTheme("transparentbtn")
 	MyTheme.Button("transparentbtn").BackColor=ABM.COLOR_TRANSPARENT
 	
 	MyTheme.AddCardTheme("cardRedTheme")
-	MyTheme.Card("cardRedTheme").ActionForeColor=ABM.COLOR_RED
+	MyTheme.Card("cardRedTheme").ActionForeColor="beidared"
 	MyTheme.Card("cardRedTheme").TitleForeColor=ABM.COLOR_YELLOW
 	MyTheme.AddModalSheetTheme("redModal")
-	MyTheme.ModalSheet("redModal").Colorize(ABM.COLOR_RED)
-	'MyTheme.ModalSheet("redModal").FooterBackColor=ABM.COLOR_RED
-	'MyTheme.ModalSheet("redModal").HeaderBackColor=ABM.COLOR_RED
+	'MyTheme.ModalSheet("redModal").Colorize("beidared")
+	MyTheme.ModalSheet("redModal").FooterBackColor="beidared"
+	
+
 	
 	MyTheme.AddInputTheme("redInput")
-	MyTheme.Input("redInput").Colorize(ABM.COLOR_RED)
+	MyTheme.Input("redInput").Colorize("beidared")
+
 
 	' a tab theme
 	MyTheme.AddTabsTheme("redTabs")
-	MyTheme.Tabs("redTabs").Colorize(ABM.COLOR_RED)
+	MyTheme.Tabs("redTabs").Colorize("beidared")
 	
 	' a msgbox theme
 	MyTheme.AddMsgBoxTheme("redmsgbox")
-	MyTheme.MsgBox("redmsgbox").Colorize(ABM.COLOR_RED)
+	MyTheme.MsgBox("redmsgbox").Colorize("beidared")
 	
 	' the footer theme
 	MyTheme.AddContainerTheme("footertheme")
@@ -369,7 +385,7 @@ Sub ConnectNavigationBarLogined(page As ABMPage) 'ignore
 	'page.NavigationBar.AddSideBarItem("LogOff", "登出", "mdi-action-exit-to-app",   "")
 	
 	' add the LOGOUT item on the title bar....
-	page.NavigationBar.AddTopItem("Home", page.XTR("0001","主页"), "",  "../HomePage",True)
+	page.NavigationBar.AddTopItem("Home", page.XTR("0001","主页"),"",  "../HomePage",True)
 	page.NavigationBar.AddTopItem("LogOff", page.XTR("0002","登出"), "mdi-action-exit-to-app",   "",True)
 	page.NavigationBar.Title=page.XTR("0004","大赛报名")
 	page.NavigationBar.Refresh ' IMPORTANT
