@@ -148,7 +148,7 @@ Sub ConnectPage()
 	ABMShared.enableMultilanguage(ws,page)
 	' ConnectNavigationBar2 is purposely built for public pages... It does not require a login to view
 	If ws.Session.HasAttribute("IsAuthorized") And ws.Session.GetAttribute("IsAuthorized")="true" Then
-		ABMShared.ConnectNavigationBarLogined(page)
+		ABMShared.ConnectNavigationBarLoginedWithTitle(page,"答题情况")
 	Else
 		Return
 	End If
@@ -178,8 +178,21 @@ Sub ConnectPage()
 	If File.Exists(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&".json") Then
 		statusinp.Text="已提交"
 	End If
-	If File.Exists(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&"-score.txt") Then
-		scoreinp.Text=File.ReadString(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&"-score.txt")
+	If File.Exists(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&"-score.json") Then
+		Dim json As JSONParser
+		json.Initialize(File.ReadString(File.Combine(File.DirApp,"submitted"),ws.Session.GetAttribute("authName")&"-score.json"))
+		Dim map1 As Map
+		map1=json.NextObject
+		Dim score As String
+		Dim total As Int
+		For Each key As String In map1.Keys
+			Dim singlescore As Int
+			singlescore=map1.Get(key)
+			score=score&key&":"&singlescore&" "
+			total=total+singlescore
+		Next
+		score=score&"总分："&total
+		scoreinp.Text=score
 	End If
 	
 	ABMShared.ConnectFooter(page)
@@ -211,7 +224,7 @@ public Sub BuildPage()
 	' faint green dot (on title bar) when connected - red when not connected with web socket
 	page.ShowConnectedIndicator = True
 	
-	ABMShared.BuildNavigationBarextra(page,  "大赛报名","../images/logo.png", "Home", "Home", "Home")
+	ABMShared.BuildNavigationBarextra(page,  "答题情况","../images/logo.png", "Home", "Home", "Home")
 	
 	page.AddRows(1,True,"").AddCells12(1,"")
 	page.AddRows(1,True,"").AddCellsOS(2,0,0,0,7,7,7,"")

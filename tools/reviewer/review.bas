@@ -57,6 +57,7 @@ Sub saveBtn_MouseClicked (EventData As MouseEvent)
 		Dim json As JSONGenerator
 		json.Initialize(score)
 		File.WriteString(File.Combine(File.DirApp,"submitted"),email&"-score.json",json.ToString)
+		fx.Msgbox(reviewForm,"已保存","")
 	Else
 		fx.Msgbox(reviewForm,"请打完分数","")
     End If

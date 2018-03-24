@@ -390,7 +390,22 @@ Sub ConnectNavigationBarLogined(page As ABMPage) 'ignore
 	page.NavigationBar.Title=page.XTR("0004","大赛报名")
 	page.NavigationBar.Refresh ' IMPORTANT
 End Sub
+Sub ConnectNavigationBarLoginedWithTitle(page As ABMPage,title As String) 'ignore	
+	' Clear the dummies we created in BuildNavigationBar
+	page.NavigationBar.Clear
+	
 
+	' add NavigationBar items 
+	' direct the nav to an associated page in the last parameter - "../AboutPage"
+	'page.NavigationBar.AddSideBarItem("Home", "主页", "",  "../HomePage")
+	'page.NavigationBar.AddSideBarItem("LogOff", "登出", "mdi-action-exit-to-app",   "")
+	
+	' add the LOGOUT item on the title bar....
+	page.NavigationBar.AddTopItem("Home", page.XTR("0001","主页"),"",  "../HomePage",True)
+	page.NavigationBar.AddTopItem("LogOff", page.XTR("0002","登出"), "mdi-action-exit-to-app",   "",True)
+	page.NavigationBar.Title=title
+	page.NavigationBar.Refresh ' IMPORTANT
+End Sub
 Sub ConnectNavigationBar(page As ABMPage) 'ignore	
 	' Clear the dummies we created in BuildNavigationBar
 	page.NavigationBar.Clear
