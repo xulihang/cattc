@@ -353,7 +353,7 @@ Sub ConnectFooter(page As ABMPage)
 	Dim wh As String = ABM.GetBrowserWidthHeight(page)
 	Log(wh)
 	Dim lbl1 As ABMLabel
-	lbl1.Initialize(page, "footlbl1", page.XTR("0005","TAPKU Copyright @2017 技术支持请前往官方QQ群"),ABM.SIZE_PARAGRAPH, False, "lbltheme3")
+	lbl1.Initialize(page, "footlbl1", page.XTR("0005","TAPKU Copyright @2017 技术支持：xulihanghai@163.com"),ABM.SIZE_PARAGRAPH, False, "lbltheme3")
 	Dim whspl() As String = Regex.Split(";", wh)
 	If whspl(0) < whspl(1) Then
 		ScreenWidth = whspl(0)

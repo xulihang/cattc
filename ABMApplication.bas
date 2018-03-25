@@ -40,7 +40,7 @@ Public Sub Initialize
 	' add your icons
 	' ABM.AddAppleTouchIcon("", "")
 	' ABM.AddMSTileIcon("", "")
-	' ABM.AddFavorityIcon("", "")
+	ABM.AddFavorityIcon("favicon.ico", "")
 	
 	#If RELEASE	
 	'ABM.ActivateUseCDN("DONATORKEY", "https://cdn.jsdelivr.net/gh/RealAlwaysbusy/ABMaterial@v3.81-rc1/")

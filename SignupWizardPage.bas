@@ -167,7 +167,7 @@ Sub ConnectPage()
 	wizB.AddStep("stepB2",page.XTR("0007","第二步"),page.XTR("0008","姓名"),"mdi-action-account-circle",BuildContainer("StepB2Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	wizB.AddStep("stepB3",page.XTR("0009","第三步"),"所属单位","mdi-communication-location-on",BuildContainer("StepB3Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	wizB.AddStep("stepB4","第四步","手机号码","mdi-communication-phone",BuildContainer("StepB4Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
-	wizB.AddStep("stepB5","第五步",page.XTR("0010","密码"),"",BuildContainer("StepB5Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
+	wizB.AddStep("stepB5","第五步",page.XTR("0010","设置密码"),"",BuildContainer("StepB5Cont"),ABM.SMARTWIZARD_STATE_DISABLED)
 	page.Cell(1,1).AddComponent(wizB)
 	ABMShared.ConnectFooter(page)
 	
@@ -261,7 +261,7 @@ Sub BuildContainer(ID As String) As ABMContainer
 			'Dim pwdlbl As ABMLabel = ABMShared.BuildHeader(page, ID & "pwdlbl", "密码")
 			'cont.Cell(1,1).AddComponent(pwdlbl)
 			Dim addressinp As ABMInput
-			addressinp.Initialize(page, "inp",ABM.INPUT_PASSWORD,page.XTR("0013","密码:"), False, "redInput")
+			addressinp.Initialize(page, "inp",ABM.INPUT_PASSWORD,page.XTR("0013","设置密码:"), False, "redInput")
 			'addressinp.PlaceHolderText = "write your address"
 			cont.Cell(1,1).AddComponent(addressinp)
 	End Select

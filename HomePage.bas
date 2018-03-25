@@ -211,15 +211,15 @@ Sub card1_LinkClicked(Card As String, Action As String)
 	If Action=page.XTR("0004","报名") Then
 		ABMShared.NavigateToPage(ws, ABM.GetPageID(page, "SignupWizardPage",ws), "../SignupWizardPage")
 	Else
-		Dim email,paid As String
-		email=ws.Session.GetAttribute("authName")
-		Dim list1 As List
-		list1=getInfo(email)
-		paid=list1.Get(2)
-		If paid="未付款" Then
-			ws.Alert("请先付款")
-			Return
-		End If
+		'Dim email,paid As String
+		'email=ws.Session.GetAttribute("authName")
+		'Dim list1 As List
+		'list1=getInfo(email)
+		'paid=list1.Get(2)
+		'If paid="未付款" Then
+		'	ws.Alert("请先付款")
+		'	Return
+		'End If
 		ABMShared.NavigateToPage(ws, ABM.GetPageID(page, "AnswerPage",ws), "../AnswerPage")
 	End If
 	
