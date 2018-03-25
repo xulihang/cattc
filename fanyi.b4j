@@ -19,6 +19,7 @@ Module12=KeyValueStore
 Module13=verifyEmail
 Module14=handleOrder
 Module15=DBM
+Module16=shutdown
 Module2=ABMCacheControl
 Module3=ABMErrorHandler
 Module4=ABMRootFilter
@@ -29,7 +30,7 @@ Module8=ABMCacheScavenger
 Module9=SignupWizardPage
 NumberOfFiles=0
 NumberOfLibraries=11
-NumberOfModules=15
+NumberOfModules=16
 Version=6.01
 @EndOfDesignText@
 'Non-UI application (console / server application)
@@ -92,6 +93,7 @@ Sub AppStart (Args() As String)
 	myApp.AddPage(reset.page)
 	srvr.AddHandler("/verify","verifyEmail",False)
 	srvr.AddHandler("/ordercomplete","handleOrder",False)
+	srvr.AddHandler("/shutdown","shutdown",False)
 	' start the server  - server name and port.
 	myApp.StartServer(srvr, "srvr", 80)	
 	
